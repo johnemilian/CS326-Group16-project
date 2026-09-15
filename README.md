@@ -1,6 +1,6 @@
 ### Team Members
 
-- Sam Wolke:
+- Sam Wolke: https://github.com/Ilyiux
 - John Emilian:
 - Ryan Trinh:
 
