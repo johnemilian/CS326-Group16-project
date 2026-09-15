@@ -1,7 +1,7 @@
 ### Team Members
 
 - Sam Wolke: https://github.com/Ilyiux
-- John Emilian:
+- John Emilian: https://github.com/johnemilian
 - Ryan Trinh: https://github.com/NguyenAnh28
 
 ### Working Agreement

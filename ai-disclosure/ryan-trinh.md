@@ -1,1 +1,1 @@
-No AI was used on this sprint
+No AI was used on this sprint.
