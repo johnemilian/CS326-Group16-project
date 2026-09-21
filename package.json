@@ -1,0 +1,10 @@
+{
+  "name": "cs326-group-16",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
