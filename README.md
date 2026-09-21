@@ -1,8 +1,10 @@
 ### Team Members
 
-- Sam Wolke: https://github.com/Ilyiux
-- John Emilian: https://github.com/johnemilian
-- Ryan Trinh: https://github.com/NguyenAnh28
+| Name         | GitHub Username                               |
+| ------------ | --------------------------------------------- |
+| Sam Wolke    | [Ilyiux](https://github.com/Ilyiux)           |
+| John Emilian | [johnemilian](https://github.com/johnemilian) |
+| Ryan Trinh   | [NguyenAnh28](https://github.com/NguyenAnh28) |
 
 ### Working Agreement
 
