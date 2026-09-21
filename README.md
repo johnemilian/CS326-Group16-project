@@ -1,3 +1,36 @@
+# Project Info
+
+This project is a website that would run on tablets inside the [Cape Abilities Farm](https://www.capeabilitiesfarm.org/who-we-are)'s greenhouses. It allows for employees and managers to see which seeds need to be planted and log when they have been planted.
+
+### Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/johnemilian/CS326-Group16-project
+```
+
+Navigate into the top level of the project directory.
+
+Install dependencies:
+
+```bash
+npm install express
+npm install ejs
+```
+
+Running locally:
+
+```bash
+npm start
+```
+
+The server will open locally on <http://localhost:3000/>.
+
+To stop the server run `ctrl + C` (^C) in the terminal.
+
+# Team
+
 ### Team Members
 
 | Name         | GitHub Username                               |
