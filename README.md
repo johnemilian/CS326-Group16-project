@@ -2,11 +2,7 @@
 
 - Sam Wolke: https://github.com/Ilyiux
 - John Emilian: https://github.com/johnemilian
-<<<<<<< HEAD
-- Ryan Trinh:
-=======
 - Ryan Trinh: https://github.com/NguyenAnh28
->>>>>>> origin/main
 
 ### Working Agreement
 
