@@ -16,10 +16,6 @@ app.get("/info", (req, res) => {
 `);
 });
 
-app.get("/info", (req, res) => {
-  res.send("<h1>Product Information</h1>")
-});
-
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
