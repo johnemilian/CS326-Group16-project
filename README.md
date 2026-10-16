@@ -4,7 +4,7 @@ This project is a website that would run on tablets inside the [Cape Abilities F
 
 ### Setup
 
-Clone the repository:
+From inside the [Gantry](https://github.com/timdrichards/gantry) development environment, clone the repository:
 
 ```bash
 git clone https://github.com/johnemilian/CS326-Group16-project
@@ -12,11 +12,22 @@ git clone https://github.com/johnemilian/CS326-Group16-project
 
 Navigate into the top level of the project directory.
 
-Install dependencies:
+Install Node.js dependencies:
 
 ```bash
-npm install express
-npm install ejs
+npm install
+```
+
+Start the database:
+
+```bash
+dc-up mongo
+```
+
+Create a new database replacing `your-db-name`:
+
+```bash
+echo "MONGODB_URI=mongodb://dev:devpassword@mongo:27017/your-db-name?authSource=admin" >> .env
 ```
 
 Running locally:

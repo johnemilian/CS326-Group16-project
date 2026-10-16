@@ -1,19 +1,28 @@
 import express from "express";
+import mongoose from "mongoose";
+import entriesRouter from "./routes/entries.js";
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("<h1>Group 16</h1>");
+await mongoose.connect(process.env.MONGODB_URI || "mongodb://dev:devpassword@mongo:27017/group16?authSource=admin");
+
+app.set("view engine", "ejs");
+app.set("views", "views");
+
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/entries", entriesRouter);
+
+app.use((req, res) => {
+  res.status(404).send("Page not found.");
 });
 
-app.get("/info", (req, res) => {
-  res.send(`
-    <h1>Product Information</h1>
-    <p>Group 16 is building a web app for the Cape Abilities Farm greenhouses.</p>
-    <p>It allows for employees and managers to see updated information on seeds.</p>
-`);
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Something went wrong.");
 });
 
 app.listen(PORT, () => {
