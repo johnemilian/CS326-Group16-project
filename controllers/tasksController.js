@@ -1,14 +1,14 @@
-import * as entriesService from "../services/entriesService.js";
-import { isValidId } from "../repositories/entriesRepository.js";
+import * as tasksService from "../services/tasksService.js";
+import { isValidId } from "../repositories/tasksRepository.js";
 
 export const index = async (req, res) => {
-  const entries = await entriesService.listEntries();
-  res.set("X-Total-Count", entries.length);
-  res.status(200).render("entries", { title: "Manage Tasks", entries });
+  const tasks = await tasksService.listTasks();
+  res.set("X-Total-Count", tasks.length);
+  res.status(200).render("tasks", { title: "Manage Tasks", tasks });
 };
 
 export const create = async (req, res) => {
-  const result = await entriesService.createEntry(req.body);
+  const result = await tasksService.createTask(req.body);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
@@ -17,12 +17,12 @@ export const create = async (req, res) => {
 };
 
 export const createClassic = async (req, res) => {
-  const result = await entriesService.createEntry(req.body);
+  const result = await tasksService.createTask(req.body);
   if (!result.ok) {
     res.status(result.error.status).send(result.error.message);
     return;
   }
-  res.redirect("/entries");
+  res.redirect("/tasks");
 };
 
 export const update = async (req, res) => {
@@ -31,7 +31,7 @@ export const update = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await entriesService.updateEntry(id, req.body);
+  const result = await tasksService.updateTask(id, req.body);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
@@ -45,7 +45,7 @@ export const destroy = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await entriesService.deleteEntry(id);
+  const result = await tasksService.deleteTask(id);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
@@ -59,7 +59,7 @@ export const toggleFavorite = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await entriesService.toggleFavorite(id);
+  const result = await tasksService.toggleFavorite(id);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;

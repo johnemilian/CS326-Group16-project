@@ -8,15 +8,15 @@
   <body>
     <%- include('partials/header') %>
     <main>
-      <form id="entry-form">
+      <form id="task-form">
         <input type="text" name="title" placeholder="Title">
         <input type="text" name="body" placeholder="Body">
         <button type="submit">Add task</button>
       </form>
-      <ul id="entries">
-        <% entries.forEach((entry) => { %>
-          <li data-id="<%= entry.id %>" data-title="<%= entry.title %>" data-body="<%= entry.body %>" data-favorite="<%= entry.favorite %>">
-            <span class="entry-display"><strong><%= entry.title %>:</strong> <%= entry.body %></span>
+      <ul id="tasks">
+        <% tasks.forEach((task) => { %>
+          <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-body="<%= task.body %>" data-favorite="<%= task.favorite %>">
+            <span class="task-display"><strong><%= task.title %>:</strong> <%= task.body %></span>
             <button class="favorite-btn" type="button">Favorite</button>
             <button class="edit-btn" type="button">Edit</button>
             <button class="delete-btn" type="button">Delete</button>
@@ -26,7 +26,7 @@
 
       <section class="classic-form">
         <h2>Classic form (no JavaScript)</h2>
-        <form method="POST" action="/entries/classic">
+        <form method="POST" action="/tasks/classic">
           <input type="text" name="title" placeholder="Title">
           <input type="text" name="body" placeholder="Body">
           <button type="submit">Add task the classic way</button>
