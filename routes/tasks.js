@@ -6,7 +6,6 @@ const router = Router();
 
 router.get("/", asyncHandler(tasksController.index));
 router.post("/", asyncHandler(tasksController.create));
-router.post("/classic", asyncHandler(tasksController.createClassic));
 router.put("/:id", asyncHandler(tasksController.update));
 router.delete("/:id", asyncHandler(tasksController.destroy));
 router.patch("/:id/favorite", asyncHandler(tasksController.toggleFavorite));

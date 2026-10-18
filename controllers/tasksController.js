@@ -16,15 +16,6 @@ export const create = async (req, res) => {
   res.status(201).json(result.value);
 };
 
-export const createClassic = async (req, res) => {
-  const result = await tasksService.createTask(req.body);
-  if (!result.ok) {
-    res.status(result.error.status).send(result.error.message);
-    return;
-  }
-  res.redirect("/tasks");
-};
-
 export const update = async (req, res) => {
   const { id } = req.params;
   if (!isValidId(id)) {
