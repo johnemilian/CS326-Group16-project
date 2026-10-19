@@ -42,54 +42,7 @@ To stop the server run `ctrl + C` (^C) in the terminal.
 
 # System Diagram
 
-```plantuml
-@startuml
-!theme sketchy-outline
-:Manager: as U1
-(mongoose)
-package "Browser" {
-
-package "http://localhost/tasks" as tasksPage {
-  (/views/tasks.ejs) as TV
-  (/public/app.js) as client
-}
-(/public/style.css) as CSS
-TV <-- CSS
-}
-package "Server" as ES {
-
-package "Routers" {
-(/routes/tasks.js) as TRou
-}
-
-package "Controllers" {
-(/controllers/tasksController.js) as TC
-}
-
-package "Services" {
-(/services/taskService.js) as TS
-}
-
-package "Data" {
-(/repositories/taskRepository.js) as TRep
-}
-}
-package "MongoDB" as DB {
-
-}
-(Express)
-
-}
-U1 -- tasksPage
-Express -down- ES
-mongoose -up-> TRep
-TRou -down- TC
-TS -down- TC
-TS -down- TRep
-tasksPage -right- TRou : GET/POST/PUT/DELETE
-Data -down- DB
-@enduml
-```
+![Group 16: Farm Task Tracker: system diagram](private/diagram.png)
 
 # Team
 
