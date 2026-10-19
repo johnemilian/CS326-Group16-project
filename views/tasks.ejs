@@ -10,14 +10,14 @@
     <main>
       <form id="task-form">
         <input type="text" name="title" placeholder="Title">
-        <input type="text" name="body" placeholder="Body">
+        <input type="text" name="description" placeholder="Description">
         <button type="submit">Add task</button>
       </form>
       <ul id="tasks">
         <% tasks.forEach((task) => { %>
-          <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-body="<%= task.body %>" data-favorite="<%= task.favorite %>">
-            <span class="task-display"><strong><%= task.title %>:</strong> <%= task.body %></span>
-            <button class="favorite-btn" type="button">Favorite</button>
+          <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-description="<%= task.description %>" data-priority="<%= task.priority %>">
+            <span class="task-display"><strong><%= task.title %>:</strong> <%= task.description %></span>
+            <button class="priority-btn" type="button">Priority</button>
             <button class="edit-btn" type="button">Edit</button>
             <button class="delete-btn" type="button">Delete</button>
           </li>

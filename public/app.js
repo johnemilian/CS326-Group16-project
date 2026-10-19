@@ -2,8 +2,7 @@ const form = document.querySelector("#task-form");
 const list = document.querySelector("#tasks");
 
 // Every request gives up after five seconds instead of waiting forever.
-const timedFetch = (url, options = {}) =>
-  fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
+const timedFetch = (url, options = {}) => fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
 
 // Send a request and return the JSON the server answered with. Anything
 // that goes wrong (no answer within five seconds, no connection, an error
@@ -15,9 +14,7 @@ const fetchJSON = async (url, options) => {
     response = await timedFetch(url, options);
   } catch (error) {
     throw new Error(
-      error.name === "TimeoutError"
-        ? "The server did not answer within five seconds."
-        : "Could not reach the server.",
+      error.name === "TimeoutError" ? "The server did not answer within five seconds." : "Could not reach the server.",
     );
   }
 
@@ -40,7 +37,7 @@ const fetchJSON = async (url, options) => {
 const fillDisplay = (display, task) => {
   const title = document.createElement("strong");
   title.textContent = `${task.title}:`;
-  display.replaceChildren(title, ` ${task.body}`);
+  display.replaceChildren(title, ` ${task.description}`);
 };
 
 const makeButton = (className, label) => {
@@ -56,8 +53,8 @@ const buildItem = (task) => {
   const item = document.createElement("li");
   item.dataset.id = task.id;
   item.dataset.title = task.title;
-  item.dataset.body = task.body;
-  item.dataset.favorite = task.favorite;
+  item.dataset.description = task.description;
+  item.dataset.priority = task.priority;
 
   const display = document.createElement("span");
   display.className = "task-display";
@@ -67,7 +64,7 @@ const buildItem = (task) => {
     display,
     makeButton("edit-btn", "Edit"),
     makeButton("delete-btn", "Delete"),
-    makeButton("favorite-btn", "Favorite"),
+    makeButton("priority-btn", "Priority"),
   );
   return item;
 };
@@ -80,6 +77,13 @@ const makeInput = (name, value) => {
   input.name = name;
   input.value = value;
   return input;
+};
+
+const makeTextarea = (name, value) => {
+  const textarea = document.createElement("textarea");
+  textarea.name = name;
+  textarea.value = value;
+  return textarea;
 };
 
 form.addEventListener("submit", async (event) => {
@@ -117,9 +121,9 @@ const startEdit = (item) => {
   save.textContent = "Save";
   editForm.append(
     makeInput("title", item.dataset.title),
-    makeInput("body", item.dataset.body),
     save,
     makeButton("cancel-btn", "Cancel"),
+    makeTextarea("description", item.dataset.description),
   );
 
   display.replaceWith(editForm);
@@ -149,7 +153,7 @@ const startEdit = (item) => {
         body: JSON.stringify(task),
       });
       item.dataset.title = saved.title;
-      item.dataset.body = saved.body;
+      item.dataset.description = saved.description;
       fillDisplay(display, saved);
       editForm.replaceWith(display);
       buttons.forEach((button) => {
@@ -169,16 +173,16 @@ list.addEventListener("click", async (event) => {
     return;
   }
 
-  if (event.target.matches(".favorite-btn")) {
+  if (event.target.matches(".priority-btn")) {
     const item = event.target.closest("li");
     const id = item.dataset.id;
     try {
-      const updated = await fetchJSON(`/tasks/${id}/favorite`, {
+      const updated = await fetchJSON(`/tasks/${id}/priority`, {
         method: "PATCH",
       });
-      item.dataset.favorite = updated.favorite;
+      item.dataset.priority = updated.priority;
     } catch (error) {
-      alert(`Your favorite status was not updated. ${error.message}`);
+      alert(`Your priority status was not updated. ${error.message}`);
     }
     return;
   }

@@ -71,34 +71,29 @@ li {
   flex: 1;
 }
 
-.edit-btn {
+button {
   padding: 0.35rem 0.75rem;
-  border: 1px solid #0b6e99;
   border-radius: 4px;
   background-color: var(--main-bg-color);
-  color: #0b6e99;
   cursor: pointer;
+}
+
+.edit-btn {
+  border: 1px solid #0b6e99;
+  color: #0b6e99;
 }
 
 .delete-btn {
-  padding: 0.35rem 0.75rem;
   border: 1px solid #d33;
-  border-radius: 4px;
-  background-color: var(--main-bg-color);
   color: #d33;
-  cursor: pointer;
 }
 
-.favorite-btn {
-  padding: 0.35rem 0.75rem;
+.priority-btn {
   border: 1px solid gold;
-  border-radius: 4px;
-  background-color: var(--main-bg-color);
   color: gold;
-  cursor: pointer;
 }
 
-li[data-favorite="true"] .favorite-btn {
+li[data-priority="true"] .priority-btn {
   background-color: gold;
   color: white;
   text-transform: uppercase;
@@ -113,6 +108,7 @@ li[data-favorite="true"] .favorite-btn {
   display: flex;
   flex: 1;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .edit-form input {
@@ -121,14 +117,18 @@ li[data-favorite="true"] .favorite-btn {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+.edit-form textarea {
+  font-family: inherit;
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  border-radius: 4px;
+  flex-basis: 100%;
+}
 
 .edit-form button {
-  padding: 0.35rem 0.75rem;
   border: none;
-  border-radius: 4px;
   background-color: #0b6e99;
   color: white;
-  cursor: pointer;
 }
 
 .edit-form .cancel-btn {
