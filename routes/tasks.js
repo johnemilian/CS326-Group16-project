@@ -8,6 +8,6 @@ router.get("/", asyncHandler(tasksController.index));
 router.post("/", asyncHandler(tasksController.create));
 router.put("/:id", asyncHandler(tasksController.update));
 router.delete("/:id", asyncHandler(tasksController.destroy));
-router.patch("/:id/favorite", asyncHandler(tasksController.toggleFavorite));
+router.patch("/:id/priority", asyncHandler(tasksController.togglePriority));
 
 export default router;

@@ -44,13 +44,13 @@ export const destroy = async (req, res) => {
   res.status(204).send();
 };
 
-export const toggleFavorite = async (req, res) => {
+export const togglePriority = async (req, res) => {
   const { id } = req.params;
   if (!isValidId(id)) {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.toggleFavorite(id);
+  const result = await tasksService.togglePriority(id);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
