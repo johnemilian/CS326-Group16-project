@@ -40,6 +40,57 @@ The server will open locally on <http://localhost:3000/>.
 
 To stop the server run `ctrl + C` (^C) in the terminal.
 
+# System Diagram
+
+```plantuml
+@startuml
+!theme sketchy-outline
+:Manager: as U1
+(mongoose)
+package "Browser" {
+
+package "http://localhost/tasks" as tasksPage {
+  (/views/tasks.ejs) as TV
+  (/public/app.js) as client
+}
+(/public/style.css) as CSS
+TV <-- CSS
+}
+package "Server" as ES {
+
+package "Routers" {
+(/routes/tasks.js) as TRou
+}
+
+package "Controllers" {
+(/controllers/tasksController.js) as TC
+}
+
+package "Services" {
+(/services/taskService.js) as TS
+}
+
+package "Data" {
+(/repositories/taskRepository.js) as TRep
+}
+}
+package "MongoDB" as DB {
+
+}
+(Express)
+
+}
+U1 -- tasksPage
+Express -down- ES
+mongoose -up-> TRep
+TRou -down- TC
+TS -down- TC
+TS -down- TRep
+tasksPage -right- TRou : GET/POST/PUT/DELETE
+Data -down- DB
+@enduml
+```
+
 # Team
 
 ### Team Members
@@ -59,3 +110,7 @@ To stop the server run `ctrl + C` (^C) in the terminal.
 ### Project Domain
 
 The [Cape Abilities Farm](https://www.capeabilitiesfarm.org/who-we-are) creates employment opportunities for people with disabilities. The Farm wants to employ tablets in each of their six greenhouses that can serve as communication portals for task updates, alerts, and/or employee training. Specifically, group employment participants plant lettuce seeds on a weekly basis. An app where any individual member of the group could select which varieties of lettuce were planted would be helpful to both the lead grower and the employment group, giving more agency to participants, especially those to whom communication can be a barrier.
+
+```
+
+```
