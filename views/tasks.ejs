@@ -11,12 +11,18 @@
       <form id="task-form">
         <input type="text" name="title" placeholder="Title">
         <input type="text" name="description" placeholder="Description">
+        <input type="text" name="station" placeholder="Station">
+        <input type="text" name="assigner" placeholder="Assigner">
+        <input type="text" name="assignee" placeholder="Assignee">
+        <input type="date" name="deadline" aria-label="Deadline">
+        <input type="text" name="prerequisites" placeholder="Prerequisites">
         <button type="submit">Add task</button>
       </form>
       <ul id="tasks">
         <% tasks.forEach((task) => { %>
-          <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-description="<%= task.description %>" data-priority="<%= task.priority %>">
-            <span class="task-display"><strong><%= task.title %>:</strong> <%= task.description %></span>
+          <% const details = [["Station", task.station], ["Assigner", task.assigner], ["Assignee", task.assignee], ["Deadline", task.deadline], ["Prerequisites", task.prerequisites]].filter(([, value]) => value); %>
+          <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-description="<%= task.description %>" data-station="<%= task.station %>" data-assigner="<%= task.assigner %>" data-assignee="<%= task.assignee %>" data-deadline="<%= task.deadline %>" data-prerequisites="<%= task.prerequisites %>" data-priority="<%= task.priority %>">
+            <span class="task-display"><strong><%= task.title %>:</strong> <%= task.description %><% if (details.length) { %><small class="task-details"><%= details.map(([label, value]) => `${label}: ${value}`).join(" · ") %></small><% } %></span>
             <button class="priority-btn" type="button">Priority</button>
             <button class="edit-btn" type="button">Edit</button>
             <button class="delete-btn" type="button">Delete</button>

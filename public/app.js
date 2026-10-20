@@ -34,10 +34,32 @@ const fetchJSON = async (url, options) => {
 // Fill an entry's display: a bold title, then the body. textContent, never
 // innerHTML: titles and bodies are user input, and innerHTML would run them as
 // markup if someone typed a <script> or <img> tag.
+const detailFields = [
+  ["station", "Station"],
+  ["assigner", "Assigner"],
+  ["assignee", "Assignee"],
+  ["deadline", "Deadline"],
+  ["prerequisites", "Prerequisites"],
+];
+
 const fillDisplay = (display, task) => {
   const title = document.createElement("strong");
   title.textContent = `${task.title}:`;
-  display.replaceChildren(title, ` ${task.description}`);
+  display.replaceChildren(title, ` ${task.description ?? ""}`);
+
+  const details = detailFields.filter(([field]) => task[field]).map(([field, label]) => `${label}: ${task[field]}`);
+  if (details.length) {
+    const small = document.createElement("small");
+    small.className = "task-details";
+    small.textContent = details.join(" · ");
+    display.append(small);
+  }
+};
+
+const setData = (item, task) => {
+  for (const field of ["title", "description", ...detailFields.map(([field]) => field)]) {
+    item.dataset[field] = task[field] ?? "";
+  }
 };
 
 const makeButton = (className, label) => {
@@ -52,8 +74,7 @@ const makeButton = (className, label) => {
 const buildItem = (task) => {
   const item = document.createElement("li");
   item.dataset.id = task.id;
-  item.dataset.title = task.title;
-  item.dataset.description = task.description;
+  setData(item, task);
   item.dataset.priority = task.priority;
 
   const display = document.createElement("span");
@@ -71,11 +92,13 @@ const buildItem = (task) => {
 
 // Setting .value, not a value="..." attribute in a string, so a quote in the
 // title cannot end the attribute early.
-const makeInput = (name, value) => {
+const makeInput = (name, value, label, type = "text") => {
   const input = document.createElement("input");
-  input.type = "text";
+  input.type = type;
   input.name = name;
   input.value = value;
+  input.placeholder = label;
+  input.setAttribute("aria-label", label);
   return input;
 };
 
@@ -120,10 +143,13 @@ const startEdit = (item) => {
   save.type = "submit";
   save.textContent = "Save";
   editForm.append(
-    makeInput("title", item.dataset.title),
+    makeInput("title", item.dataset.title, "Title"),
     save,
     makeButton("cancel-btn", "Cancel"),
     makeTextarea("description", item.dataset.description),
+    ...detailFields.map(([field, label]) =>
+      makeInput(field, item.dataset[field], label, field === "deadline" ? "date" : "text"),
+    ),
   );
 
   display.replaceWith(editForm);
@@ -152,8 +178,7 @@ const startEdit = (item) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(task),
       });
-      item.dataset.title = saved.title;
-      item.dataset.description = saved.description;
+      setData(item, saved);
       fillDisplay(display, saved);
       editForm.replaceWith(display);
       buttons.forEach((button) => {
