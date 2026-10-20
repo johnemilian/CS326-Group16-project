@@ -20,7 +20,7 @@
       </form>
       <ul id="tasks">
         <% tasks.forEach((task) => { %>
-          <% const details = [["Station", task.station], ["Assigner", task.assigner], ["Assignee", task.assignee], ["Due", task.deadline], ["Needs", task.prerequisites]].filter(([, value]) => value); %>
+          <% const details = [["Station", task.station], ["Assigner", task.assigner], ["Assignee", task.assignee], ["Deadline", task.deadline], ["Prerequisites", task.prerequisites]].filter(([, value]) => value); %>
           <li data-id="<%= task.id %>" data-title="<%= task.title %>" data-description="<%= task.description %>" data-station="<%= task.station %>" data-assigner="<%= task.assigner %>" data-assignee="<%= task.assignee %>" data-deadline="<%= task.deadline %>" data-prerequisites="<%= task.prerequisites %>" data-priority="<%= task.priority %>">
             <span class="task-display"><strong><%= task.title %>:</strong> <%= task.description %><% if (details.length) { %><small class="task-details"><%= details.map(([label, value]) => `${label}: ${value}`).join(" · ") %></small><% } %></span>
             <button class="priority-btn" type="button">Priority</button>
