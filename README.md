@@ -99,6 +99,10 @@ Description
 
 \- Author
 
+# System Diagram
+
+![Group 16: Farm Task Tracker: system diagram](private/diagram.png)
+
 # Team
 
 ### Team Members
