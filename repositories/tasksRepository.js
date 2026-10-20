@@ -4,7 +4,12 @@ const taskSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: false },
+    station: { type: String, required: false },
+    assigner: { type: String, required: false },
+    assignee: { type: String, required: false },
     priority: { type: Boolean, default: false },
+    deadline: { type: Date, required: false },
+    prerequisites: { type: String, required: false },
   },
   { timestamps: true },
 );
