@@ -73,6 +73,8 @@ New tasks are **created** at `POST /tasks`. A request to this endpoint is made a
 }
 ```
 
+_Note: Priority is not sent via JSON, it starts as false and is toggled in the database based on requests to the priority endpoint._
+
 Existing tasks are **updated** at `PUT /tasks/:id`. A request to this endpoint is made after a user clicks the 'Save' button on the edit form in a specific task. It sends a JSON structured request to the endpoint matching the ID of the entry of the same form as the POST request, and the created task is immediately updated on their task list.
 
 Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoint is made after a user clicks the 'Delete' button on a specific task. It sends a request to the endpoint matching the ID of the deleted entry., and the deleted task is immediately removed on their task list.
