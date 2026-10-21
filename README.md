@@ -95,11 +95,11 @@ We decided to follow the layered architecture as presented in Unit 11 last week.
 
 \- John Emilian
 
-### Decision 3
+### Making extra task fields optional
 
-Description
+We decided to make only the task title required in tasksService.js, while keeping the station, assigner, assignee, deadline, and prerequisites fields optional using required: false in tasksRepository.js. One of the main benefits of this is that it allows users to create a task immediately with just a title when other details aren't known yet. The alternative option was making every new field mandatory. While that would ensure all tasks have every detail filled out, it would trigger a 400 error if a task didn't have a deadline or prerequisites yet, forcing users to submit fake data just to get past validation. Though we give up having complete records for every single task right away, we decided it was better to avoid blocking users when certain details are missing.
 
-\- Author
+\- Ryan Trinh
 
 # System Diagram
 
