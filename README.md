@@ -40,6 +40,67 @@ The server will open locally on <http://localhost:3000/>.
 
 To stop the server run `ctrl + C` (^C) in the terminal.
 
+# Features
+
+### Task List
+
+The list runs at `GET /tasks`, and acts as a to-do list for various tasks on the farm.
+
+Each task has the following information:
+
+- Title - `text`
+- Description - `text`
+- Station - `text`
+- Assigner - `text`
+- Assignee - `text`
+- Prerequisites - `text`
+- Priority Level - `boolean`
+- Deadline - `date`
+
+Additionally, on the backend each task has an ID field.
+
+New tasks are **created** at `POST /tasks`. A request to this endpoint is made after a user clicks the 'Add Task' button. It sends a json structured request of the following form, and the created task is immediately visible on their task list.
+
+```json
+{
+  "title": "text",
+  "description": "text",
+  "station": "text",
+  "assigner": "text",
+  "assignee": "text",
+  "prerequisites": "text",
+  "deadline": "date"
+}
+```
+
+_Note: Priority is not sent via JSON, it starts as false and is toggled in the database based on requests to the priority endpoint._
+
+Existing tasks are **updated** at `PUT /tasks/:id`. A request to this endpoint is made after a user clicks the 'Save' button on the edit form in a specific task. It sends a JSON structured request to the endpoint matching the ID of the entry of the same form as the POST request, and the created task is immediately updated on their task list.
+
+Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoint is made after a user clicks the 'Delete' button on a specific task. It sends a request to the endpoint matching the ID of the deleted entry., and the deleted task is immediately removed on their task list.
+
+Existing tasks have their priority toggled at `PATCH /tasks/:id/priority`. A request to this endpoint is made after a user clicks the 'Priority' button on a specific task. It sends a request to the endpoint matching the ID of the toggled entry, and the task is immediately toggled on their task list.
+
+# Design Decisions
+
+### MongoDB vs JSON File
+
+We decided to use MongoDB for our database instead of a JSON file. This was primarily for the benefit that it eliminates the possibility of race conditions occurring in a deployed application when multiple requests arrive simultaneously. The alternative option was a JSON file, similar to the one used early in the example project. This would have worked equivalently during the development stage, since only one request would have arrived at one time, but is much less practical in a real implementation. Despite this being easier and more intuitive to work with since the data is more exposed, we decided against it for the benefit of future proofing. Having all of our data in a database that remains the same through the duration of development instead of deciding to switch later requires much less work.
+
+\- Sam Wolke
+
+### Decision 2
+
+Description
+
+\- Author
+
+### Decision 3
+
+Description
+
+\- Author
+
 # System Diagram
 
 ![Group 16: Farm Task Tracker: system diagram](private/diagram.png)
@@ -63,7 +124,3 @@ To stop the server run `ctrl + C` (^C) in the terminal.
 ### Project Domain
 
 The [Cape Abilities Farm](https://www.capeabilitiesfarm.org/who-we-are) creates employment opportunities for people with disabilities. The Farm wants to employ tablets in each of their six greenhouses that can serve as communication portals for task updates, alerts, and/or employee training. Specifically, group employment participants plant lettuce seeds on a weekly basis. An app where any individual member of the group could select which varieties of lettuce were planted would be helpful to both the lead grower and the employment group, giving more agency to participants, especially those to whom communication can be a barrier.
-
-```
-
-```
