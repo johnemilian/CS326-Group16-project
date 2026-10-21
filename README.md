@@ -89,11 +89,11 @@ We decided to use MongoDB for our database instead of a JSON file. This was prim
 
 \- Sam Wolke
 
-### Decision 2
+### Layered vs flat design
 
-Description
+We decided to follow the layered architecture as presented in Unit 11 last week. One of the notable benefits to this is consistency with separation of functionality. Each layer of functionality is more likely to follow a pattern if it's in a file aligned with its scope, and not distributed over a file in multiple spots, making the code for that "layer" harder to find and possibly different. This leads to another benefit of efficiency. With layered architecture, we will be less likely to repeat a pattern of code multiple times, which is likely to happen as the features add up. Though we probably would not have considered the alternative, what we did give up was simplicity at the current feature set. For example, to add a new feature requires modifying 3-5 layers/files, which at the current scale might seem unnecessary.
 
-\- Author
+\- John Emilian
 
 ### Decision 3
 
