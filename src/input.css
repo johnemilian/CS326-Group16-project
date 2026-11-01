@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Import legacy styles first, then Tailwind's own layers.
+    Later layers in this list will override earlier ones. */
+@layer legacy, theme, base, components, utilities;
+
+@layer legacy {
+  @import "./legacy.css";
+}
+
+@layer components {
+  @import "./components.css";
+}
