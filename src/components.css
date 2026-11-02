@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+}
+
+.form-input {
+  @apply flex-1 p-2 border-2 border-gray-300 rounded-sm;
+}
+
+.button {
+}
+
+button {
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  border: 1px solid #0b6e99;
+  color: #0b6e99;
+}
+
+.delete-btn {
+  border: 1px solid #d33;
+  color: #d33;
+}
+
+.priority-btn {
+  border: 1px solid gold;
+  color: gold;
+}
+
+li[data-priority="true"] .priority-btn {
+  background-color: gold;
+  color: white;
+  text-transform: uppercase;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.edit-form {
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.edit-form input {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.edit-form textarea {
+  font-family: inherit;
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+  border-radius: 4px;
+  flex-basis: 100%;
+}
+
+.edit-form button {
+  border: none;
+  background-color: #0b6e99;
+  color: white;
+}
+
+.edit-form .cancel-btn {
+  background-color: #888;
+}
