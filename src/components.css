@@ -3,37 +3,11 @@
 }
 
 .form-input {
-  @apply flex-1 rounded-sm p-2 border-2 border-gray-300;
+  @apply rounded-sm p-2 border-2 border-gray-300;
 }
 
 .btn {
   @apply cursor-pointer rounded-sm py-1.5 px-3;
-}
-
-.edit-btn {
-  border: 1px solid #0b6e99;
-  color: #0b6e99;
-}
-
-.delete-btn {
-  border: 1px solid #d33;
-  color: #d33;
-}
-
-.priority-btn {
-  border: 1px solid gold;
-  color: gold;
-}
-
-li[data-priority="true"] .priority-btn {
-  background-color: gold;
-  color: white;
-  text-transform: uppercase;
-}
-
-.delete-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .edit-form {
