@@ -3,16 +3,11 @@
 }
 
 .form-input {
-  @apply flex-1 p-2 border-2 border-gray-300 rounded-sm;
+  @apply flex-1 rounded-sm p-2 border-2 border-gray-300;
 }
 
-.button {
-}
-
-button {
-  padding: 0.35rem 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
+.btn {
+  @apply cursor-pointer rounded-sm py-1.5 px-3;
 }
 
 .edit-btn {
