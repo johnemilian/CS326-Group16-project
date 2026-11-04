@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-off-white: seashell;
+}
+
+@layer components {
+  @import "./components.css";
+}
+
+@layer base {
+  @import "./base.css";
+}

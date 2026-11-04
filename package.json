@@ -3,12 +3,16 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/output.css"
   },
-  "type": "module",
   "dependencies": {
     "ejs": "^6.0.1",
     "express": "^5.2.1",
     "mongoose": "^9.11.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
   }
 }
