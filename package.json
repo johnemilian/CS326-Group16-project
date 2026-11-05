@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/output.css"
   },
   "dependencies": {
     "ejs": "^6.0.1",
@@ -12,6 +13,8 @@
     "mongoose": "^9.11.2"
   },
   "devDependencies": {
-    "jest": "^30.5.2"
+    "jest": "^30.5.2",
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
   }
 }
