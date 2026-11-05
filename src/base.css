@@ -1,3 +1,14 @@
+body {
+  @apply bg-off-white p-4 font-sans mx-auto max-w-[800px];
+}
+
+a {
+  @apply text-sky-700 hover:underline;
+}
+
+/* legacy style following: delete after migrating to Tailwind CSS if
+   deciding to keep client-side DOM manipulation without full HTMX */
+
 :root {
   --main-bg-color: seashell;
 }
