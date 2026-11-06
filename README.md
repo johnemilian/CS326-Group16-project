@@ -89,7 +89,7 @@ We decided to use MongoDB for our database instead of a JSON file. This was prim
 
 \- Sam Wolke
 
-### Layered vs flat design
+### Tailwind CSS vs no framework
 
 We decided to use Tailwind for the project, instead of plain CSS. Not just because it was a requirement for this sprint, but also because it will genuinely be useful. Tailwind's utility-first design makes it a good fit for small or nascent project. Not using a CSS Framework is a legitimate option. We are forgoing the this simplicity in favor of the scalability of the Tailwind framework. What it costs: a little bit of a learning curve, repetitive build steps, extra dev dependencies, and potentially more difficult troubleshooting.
 
