@@ -101,9 +101,51 @@ We decided to make only the task title required in tasksService.js, while keepin
 
 \- Ryan Trinh
 
+### Mocking the repository for tests instead of using real data
+
+We decided that it would be best for our test suite to mock the repository layer of the application. The alternative was testing using actual database data, which would have the benefit of guaranteeing that it would function as desired when deployed. When mocking the repository layer, if done incorrectly, we run the risk of our tests being inaccurate. However, this would not be worth its downsides, since it would have required that we ensure that stray testing data does not make its way into the database and database entries that we needed did not run into the chance of being harmed. Additionally, not using the actual database results in the test suite running significantly faster since a database connection does not need to be established.
+
+\- Sam Wolke
+
 # System Diagram
 
 ![Group 16: Farm Task Tracker: system diagram](private/diagram.png)
+
+# Sprint 3 Changes
+
+### MongoDB
+
+Our database was updated to MongoDB in Sprint 2. The repository layer (`/repositories/tasksRepository.js`) fully interfaces with the database. All five task routes eventually interact with one of the database methods:
+
+- `GET /tasks` - pulls a list of all tasks (`getAll()`)
+- `POST /tasks` - creates a new task (`create(data)`)
+- `PUT /tasks/:id` - updates an existing task (`updateById(id, data)`)
+- `DELETE /tasks/:id` - removes an existing task (`removeById(id)`)
+- `PATCH /tasks/:id/priority` - toggles priority on an existing task (`updateById(id, data)`)
+
+### Tests
+
+Currently, the service layer has a test suite, contained in the file `/__tests__/tasksService.test.js`. These tests can be run with:
+
+```bash
+npm run test
+```
+
+### HTMX
+
+TODO
+
+### Visuals
+
+The app received a visual overhaul using tailwind. This primarily altered the appearance of the Farm Tasks page.
+
+**Before:**
+
+![Image Showing Before](private/sprint_3_before.png)
+
+**After:**
+
+![Image Showing After](private/sprint_3_after.png)
 
 # Team
 
