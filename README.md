@@ -11,7 +11,7 @@ We are currently running server inside a custom environment container. To set up
    _Windows users: during installation, choose "Use WSL 2" if asked. After installing, open Docker Desktop once and let it finish starting up before moving on._
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/). The code editor.
-1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). This VS Code extension makes the "open in container" magic work. Click the link, then click Install, and VS Code will open and install it automatically.
+1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). This VS Code extension makes the "open in container" magic work. Click the link, then click **Install**, and VS Code will open and install it automatically.
 
    Now make sure Docker Desktop is running (look for the Docker whale icon in your taskbar or menu bar) before continuing.
 
@@ -36,7 +36,7 @@ We are currently running server inside a custom environment container. To set up
 
 1. The terminal is how you run code and commands. Inside VS Code:
 
-   Go to Terminal → New Terminal in the menu bar, or press ``Ctrl + ` `` (backtick).
+   Go to **Terminal → New Terminal**S in the menu bar, or press ``Ctrl + ` `` (backtick).
    The Gantry banner confirms everything is working. The `$` at the end of the last line is the prompt, it is waiting for you to type a command.
 
    New to the terminal? The terminal works by typing a command and pressing Enter. Commands are case-sensitive. If something goes wrong, you can usually press `Ctrl+C` to stop whatever is running.
