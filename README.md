@@ -95,6 +95,12 @@ We decided to follow the layered architecture as presented in Unit 11 last week.
 
 \- John Emilian
 
+### Converting Add task to HTMX instead of Delete
+
+We decided to convert the Add task feature to HTMX instead of Delete. Before this, new tasks were built by JavaScript in the browser, which didn't have the Tailwind classes, so they showed up unstyled until you reloaded the page. With HTMX, the server sends back the task card from the same template as the rest of the list, so new tasks always look right. The alternative was converting Delete, which would also have been a simple change since the server just removes the task and htmx removes it from the page. But the unstyled task bug would still be there, and fixing it would mean copying all the Tailwind classes into the JavaScript, so the same card would be written in two places and have to be kept in sync. Though we give up converting Delete for now, we decided it was better to convert the feature that also fixes a visible bug.
+
+\- Ryan Trinh
+
 ### Making extra task fields optional
 
 We decided to make only the task title required in tasksService.js, while keeping the station, assigner, assignee, deadline, and prerequisites fields optional using required: false in tasksRepository.js. One of the main benefits of this is that it allows users to create a task immediately with just a title when other details aren't known yet. The alternative option was making every new field mandatory. While that would ensure all tasks have every detail filled out, it would trigger a 400 error if a task didn't have a deadline or prerequisites yet, forcing users to submit fake data just to get past validation. Though we give up having complete records for every single task right away, we decided it was better to avoid blocking users when certain details are missing.
