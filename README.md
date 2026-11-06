@@ -59,7 +59,7 @@ Each task has the following information:
 
 Additionally, on the backend each task has an ID field.
 
-New tasks are **created** at `POST /tasks`. A request to this endpoint is made after a user clicks the 'Add Task' button. It sends a json structured request of the following form, and the created task is immediately visible on their task list.
+New tasks are **created** at `POST /tasks`. When a user clicks the 'Add Task' button, HTMX sends the form fields to this endpoint, and the server answers with the new task's HTML, which is added to the bottom of the task list without reloading the page. The endpoint also still accepts a JSON request of the following form, and answers with the created task as JSON.
 
 ```json
 {
@@ -94,6 +94,12 @@ We decided to use MongoDB for our database instead of a JSON file. This was prim
 We decided to follow the layered architecture as presented in Unit 11 last week. One of the notable benefits to this is consistency with separation of functionality. Each layer of functionality is more likely to follow a pattern if it's in a file aligned with its scope, and not distributed over a file in multiple spots, making the code for that "layer" harder to find and possibly different. This leads to another benefit of efficiency. With layered architecture, we will be less likely to repeat a pattern of code multiple times, which is likely to happen as the features add up. Though we probably would not have considered the alternative, what we did give up was simplicity at the current feature set. For example, to add a new feature requires modifying 3-5 layers/files, which at the current scale might seem unnecessary.
 
 \- John Emilian
+
+### Converting Add task to HTMX instead of Delete
+
+We decided to convert the Add task feature to HTMX instead of Delete. Before this, new tasks were built by JavaScript in the browser, which didn't have the Tailwind classes, so they showed up unstyled until you reloaded the page. With HTMX, the server sends back the task card from the same template as the rest of the list, so new tasks always look right. The alternative was converting Delete, which would also have been a simple change since the server just removes the task and htmx removes it from the page. But the unstyled task bug would still be there, and fixing it would mean copying all the Tailwind classes into the JavaScript, so the same card would be written in two places and have to be kept in sync. Though we give up converting Delete for now, we decided it was better to convert the feature that also fixes a visible bug.
+
+\- Ryan Trinh
 
 ### Making extra task fields optional
 
