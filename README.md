@@ -59,7 +59,7 @@ Each task has the following information:
 
 Additionally, on the backend each task has an ID field.
 
-New tasks are **created** at `POST /tasks`. A request to this endpoint is made after a user clicks the 'Add Task' button. It sends a json structured request of the following form, and the created task is immediately visible on their task list.
+New tasks are **created** at `POST /tasks`. When a user clicks the 'Add Task' button, HTMX sends the form fields to this endpoint, and the server answers with the new task's HTML, which is added to the bottom of the task list without reloading the page. The endpoint also still accepts a JSON request of the following form, and answers with the created task as JSON.
 
 ```json
 {
