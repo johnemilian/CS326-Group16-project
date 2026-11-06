@@ -1,4 +1,5 @@
-const form = document.querySelector("#task-form");
+// Adding a task is handled by htmx (see the hx-* attributes on #task-form in
+// views/tasks.ejs). This file handles edit, delete and priority.
 const list = document.querySelector("#tasks");
 
 // Every request gives up after five seconds instead of waiting forever.
@@ -70,26 +71,6 @@ const makeButton = (className, label) => {
   return button;
 };
 
-// Build an entry's <li> the same way the server-rendered page does.
-const buildItem = (task) => {
-  const item = document.createElement("li");
-  item.dataset.id = task.id;
-  setData(item, task);
-  item.dataset.priority = task.priority;
-
-  const display = document.createElement("span");
-  display.className = "task-display";
-  fillDisplay(display, task);
-
-  item.append(
-    display,
-    makeButton("edit-btn", "Edit"),
-    makeButton("delete-btn", "Delete"),
-    makeButton("priority-btn", "Priority"),
-  );
-  return item;
-};
-
 // Setting .value, not a value="..." attribute in a string, so a quote in the
 // title cannot end the attribute early.
 const makeInput = (name, value, label, type = "text") => {
@@ -108,30 +89,6 @@ const makeTextarea = (name, value) => {
   textarea.value = value;
   return textarea;
 };
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const data = new FormData(form);
-  const task = Object.fromEntries(data);
-  const button = form.querySelector("button");
-
-  // One save at a time: a second click while this one is out does nothing.
-  button.disabled = true;
-  try {
-    const saved = await fetchJSON("/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(task),
-    });
-    list.append(buildItem(saved));
-    form.reset();
-  } catch (error) {
-    alert(`Your task was not saved. ${error.message}`);
-  } finally {
-    button.disabled = false;
-  }
-});
 
 const startEdit = (item) => {
   const display = item.querySelector(".task-display");

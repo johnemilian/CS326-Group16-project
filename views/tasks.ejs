@@ -8,7 +8,14 @@
   <body>
     <%- include('partials/header') %>
     <main>
-      <form class="class-form flex flex-wrap mb-6 gap-2" id="task-form">
+      <%# htmx posts this form to /tasks and appends the returned task card to the end of #tasks.
+          The button is disabled while the request is out; the form clears only on success. %>
+      <form class="class-form flex flex-wrap mb-6 gap-2" id="task-form"
+            hx-post="/tasks" hx-target="#tasks" hx-swap="beforeend"
+            hx-disabled-elt="find button"
+            hx-on::after-request="if (event.detail.successful) this.reset()"
+            hx-on::response-error="alert('Your task was not saved. ' + event.detail.xhr.responseText)"
+            hx-on::send-error="alert('Your task was not saved. Could not reach the server.')">
         <input class="form-input flex-2" type="text" name="title" placeholder="Title">
         <input class="form-input flex-1" type="date" name="deadline" aria-label="Deadline">
         <%# 'resize' in following textarea element to allow resize along both axes to override default which is resize:vertical only %>
@@ -25,6 +32,9 @@
         <% }); %>
       </ul>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+            integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+            crossorigin="anonymous"></script>
     <script src="/app.js" defer></script>
   </body>
 </html>

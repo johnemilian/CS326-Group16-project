@@ -7,10 +7,21 @@ export const index = async (req, res) => {
   res.status(200).render("tasks", { title: "Manage Tasks", tasks });
 };
 
+// htmx marks its requests with an HX-Request header. Those get an HTML
+// fragment (one task card) to swap into the page; anything else gets JSON.
 export const create = async (req, res) => {
+  const fromHtmx = req.get("HX-Request") === "true";
   const result = await tasksService.createTask(req.body);
   if (!result.ok) {
-    res.status(result.error.status).json({ error: result.error.message });
+    if (fromHtmx) {
+      res.status(result.error.status).type("text/plain").send(result.error.message);
+    } else {
+      res.status(result.error.status).json({ error: result.error.message });
+    }
+    return;
+  }
+  if (fromHtmx) {
+    res.status(201).render("partials/task", { task: result.value });
     return;
   }
   res.status(201).json(result.value);
