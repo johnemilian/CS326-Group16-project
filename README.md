@@ -133,7 +133,7 @@ npm run test
 
 ### HTMX
 
-TODO
+The interaction that was converted to HTMX was the task submission form, which reaches the `POST /tasks` endpoint. This change is not noticeable to a user, but can be seen in `views/tasks.ejs` and `views/partials/task.ejs`.
 
 ### Visuals
 
