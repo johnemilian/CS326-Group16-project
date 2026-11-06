@@ -15,7 +15,7 @@ jest.unstable_mockModule("../repositories/tasksRepository.js", () => ({
 
 const { listTasks, createTask, updateTask, deleteTask, togglePriority } =
   await import("../services/tasksService.js");
-const { getAll, findById, updateById, removeById } =
+const { getAll, findById, updateById, removeById, create } =
   await import("../repositories/tasksRepository.js");
 
 describe("listTasks", () => {
@@ -47,6 +47,7 @@ describe("listTasks", () => {
       priority: "PT",
       deadline: "2026-11-22",
     });
+    expect(getAll).toHaveBeenCalled();
   });
 
   test("listTasks returns an empty array when there are no tasks", async () => {
@@ -55,6 +56,7 @@ describe("listTasks", () => {
     const result = await listTasks();
 
     expect(result).toEqual([]);
+    expect(getAll).toHaveBeenCalled();
   });
 });
 
@@ -63,30 +65,35 @@ describe("createTask", () => {
     const result = await createTask({});
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects an empty title", async () => {
     const result = await createTask({ title: "   " });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects a title that is not a string", async () => {
     const result = await createTask({ title: 123 });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask accepts a title of 60 characters", async () => {
     const result = await createTask({ title: "a".repeat(60) });
 
     expect(result.ok).toBe(true);
+    expect(create).toHaveBeenCalled();
   });
 
   test("createTask rejects a title longer than 60 characters", async () => {
     const result = await createTask({ title: "a".repeat(61) });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask accepts null optional text fields", async () => {
@@ -102,6 +109,7 @@ describe("createTask", () => {
     });
 
     expect(result.ok).toBe(true);
+    expect(create).toHaveBeenCalled();
   });
 
   test("createTask rejects optional text fields that are not strings", async () => {
@@ -116,6 +124,7 @@ describe("createTask", () => {
     });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects an invalid deadline", async () => {
@@ -131,6 +140,7 @@ describe("createTask", () => {
     });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
   });
 
   test("createTask saves a valid task and returns its DTO", async () => {
@@ -154,6 +164,7 @@ describe("createTask", () => {
       prerequisites: "PR",
       deadline: null,
     });
+    expect(create).toHaveBeenCalled();
   });
 });
 
@@ -167,6 +178,7 @@ describe("updateTask", () => {
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
+    expect(findById).toHaveBeenCalled();
   });
 
   test("updateTask rejects invalid task data", async () => {
@@ -180,6 +192,8 @@ describe("updateTask", () => {
     });
 
     expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(400);
+    expect(findById).toHaveBeenCalled();
   });
 
   test("updateTask updates an existing task", async () => {
@@ -222,6 +236,10 @@ describe("updateTask", () => {
       priority: "PT",
       deadline: null,
     });
+    expect(updateById).toHaveBeenCalledWith(
+      "fake-id",
+      expect.objectContaining({ title: "new" }),
+    );
   });
 });
 
@@ -233,6 +251,7 @@ describe("deleteTask", () => {
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
+    expect(findById).toHaveBeenCalled();
   });
 
   test("deleteTask removes an existing task", async () => {
@@ -254,6 +273,7 @@ describe("deleteTask", () => {
 
     expect(result.ok).toBe(true);
     expect(result.value).toBeNull();
+    expect(removeById).toHaveBeenCalledWith("fake-id");
   });
 });
 
@@ -265,6 +285,7 @@ describe("togglePriority", () => {
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
+    expect(findById).toHaveBeenCalled();
   });
 
   test("togglePriority changes priority from false to true", async () => {
@@ -282,6 +303,7 @@ describe("togglePriority", () => {
 
     expect(result.ok).toBe(true);
     expect(result.value.priority).toBe(true);
+    expect(updateById).toHaveBeenCalledWith("fake-id", { priority: true });
   });
 
   test("togglePriority changes priority from true to false", async () => {
@@ -299,5 +321,6 @@ describe("togglePriority", () => {
 
     expect(result.ok).toBe(true);
     expect(result.value.priority).toBe(false);
+    expect(updateById).toHaveBeenCalledWith("fake-id", { priority: false });
   });
 });
