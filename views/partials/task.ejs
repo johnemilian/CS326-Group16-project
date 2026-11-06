@@ -1,0 +1,9 @@
+<%# One task card. Used by tasks.ejs for the full list, and rendered on its own by
+    POST /tasks so htmx can append the new task without reloading the page. %>
+<% const details = [["Station", task.station], ["Assigner", task.assigner], ["Assignee", task.assignee], ["Deadline", task.deadline], ["Prerequisites", task.prerequisites]].filter(([, value]) => value); %>
+<li class="group/task-card flex justify-between items-center gap-2 p-3 border-2 border-gray-200 rounded-sm" data-id="<%= task.id %>" data-title="<%= task.title %>" data-description="<%= task.description %>" data-station="<%= task.station %>" data-assigner="<%= task.assigner %>" data-assignee="<%= task.assignee %>" data-deadline="<%= task.deadline %>" data-prerequisites="<%= task.prerequisites %>" data-priority="<%= task.priority %>">
+  <span class="task-display flex-1"><strong><%= task.title %>:</strong> <%= task.description %><% if (details.length) { %><small class="block mt-1 text-gray-600"><%= details.map(([label, value]) => `${label}: ${value}`).join(" · ") %></small><% } %></span>
+  <button class="priority-btn btn border border-amber-600 text-amber-600 group-data-[priority=true]/task-card:text-amber-50 group-data-[priority=true]/task-card:bg-amber-500 group-data-[priority=true]/task-card:uppercase" type="button">Priority</button>
+  <button class="edit-btn btn border border-cyan-800 text-cyan-800" type="button">Edit</button>
+  <button class="delete-btn btn border border-rose-700 text-rose-700 disabled:opacity-50 disabled:cursor-not-allowed" type="button">Delete</button>
+</li>
