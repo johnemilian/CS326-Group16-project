@@ -59,7 +59,7 @@ Each task has the following information:
 
 Additionally, on the backend each task has an ID field.
 
-New tasks are **created** at `POST /tasks`. A request to this endpoint is made after a user clicks the 'Add Task' button. It sends a json structured request of the following form, and the created task is immediately visible on their task list.
+New tasks are **created** at `POST /tasks`. When a user clicks the 'Add Task' button, HTMX sends the form fields to this endpoint, and the server answers with the new task's HTML, which is added to the bottom of the task list without reloading the page. The endpoint also still accepts a JSON request of the following form, and answers with the created task as JSON.
 
 ```json
 {
@@ -95,15 +95,63 @@ We decided to use Tailwind for the project, instead of plain CSS. Not just becau
 
 \- John Emilian
 
+### Converting Add task to HTMX instead of Delete
+
+We decided to convert the Add task feature to HTMX instead of Delete. Before this, new tasks were built by JavaScript in the browser, which didn't have the Tailwind classes, so they showed up unstyled until you reloaded the page. With HTMX, the server sends back the task card from the same template as the rest of the list, so new tasks always look right. The alternative was converting Delete, which would also have been a simple change since the server just removes the task and htmx removes it from the page. But the unstyled task bug would still be there, and fixing it would mean copying all the Tailwind classes into the JavaScript, so the same card would be written in two places and have to be kept in sync. Though we give up converting Delete for now, we decided it was better to convert the feature that also fixes a visible bug.
+
+\- Ryan Trinh
+
 ### Making extra task fields optional
 
 We decided to make only the task title required in tasksService.js, while keeping the station, assigner, assignee, deadline, and prerequisites fields optional using required: false in tasksRepository.js. One of the main benefits of this is that it allows users to create a task immediately with just a title when other details aren't known yet. The alternative option was making every new field mandatory. While that would ensure all tasks have every detail filled out, it would trigger a 400 error if a task didn't have a deadline or prerequisites yet, forcing users to submit fake data just to get past validation. Though we give up having complete records for every single task right away, we decided it was better to avoid blocking users when certain details are missing.
 
 \- Ryan Trinh
 
+### Mocking the repository for tests instead of using real data
+
+We decided that it would be best for our test suite to mock the repository layer of the application. The alternative was testing using actual database data, which would have the benefit of guaranteeing that it would function as desired when deployed. When mocking the repository layer, if done incorrectly, we run the risk of our tests being inaccurate. However, this would not be worth its downsides, since it would have required that we ensure that stray testing data does not make its way into the database and database entries that we needed did not run into the chance of being harmed. Additionally, not using the actual database results in the test suite running significantly faster since a database connection does not need to be established.
+
+\- Sam Wolke
+
 # System Diagram
 
 ![Group 16: Farm Task Tracker: system diagram](private/diagram.png)
+
+# Sprint 3 Changes
+
+### MongoDB
+
+Our database was updated to MongoDB in Sprint 2. The repository layer (`/repositories/tasksRepository.js`) fully interfaces with the database. All five task routes eventually interact with one of the database methods:
+
+- `GET /tasks` - pulls a list of all tasks (`getAll()`)
+- `POST /tasks` - creates a new task (`create(data)`)
+- `PUT /tasks/:id` - updates an existing task (`updateById(id, data)`)
+- `DELETE /tasks/:id` - removes an existing task (`removeById(id)`)
+- `PATCH /tasks/:id/priority` - toggles priority on an existing task (`updateById(id, data)`)
+
+### Tests
+
+Currently, the service layer has a test suite, contained in the file `/__tests__/tasksService.test.js`. These tests can be run with:
+
+```bash
+npm run test
+```
+
+### HTMX
+
+The interaction that was converted to HTMX was the task submission form, which reaches the `POST /tasks` endpoint. This change is not noticeable to a user, but can be seen in `views/tasks.ejs` and `views/partials/task.ejs`.
+
+### Visuals
+
+The app received a visual overhaul using tailwind. This primarily altered the appearance of the Farm Tasks page.
+
+**Before:**
+
+![Image Showing Before](private/sprint_3_before.png)
+
+**After:**
+
+![Image Showing After](private/sprint_3_after.png)
 
 # Team
 
