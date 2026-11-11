@@ -10,7 +10,7 @@ package "http://localhost/tasks" as tasksPage {
   (/views/tasks.ejs) as TV
   (/public/app.js) as client
 }
-(/public/style.css) as CSS
+(/public/output.css) as CSS
 TV <-- CSS
 }
 
