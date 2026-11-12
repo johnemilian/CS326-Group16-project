@@ -165,7 +165,7 @@ We decided to use MongoDB for our database instead of a JSON file. This was prim
 
 ### Tailwind CSS vs no framework
 
-We decided to use Tailwind for the project, instead of plain CSS. Not just because it was a requirement for this sprint, but also because it will genuinely be useful. Tailwind's utility-first design makes it a good fit for small or nascent project. Not using a CSS Framework is a legitimate option. We are forgoing the this simplicity in favor of the scalability of the Tailwind framework. What it costs: a little bit of a learning curve, repetitive build steps, extra dev dependencies, and potentially more difficult troubleshooting.
+We decided to use Tailwind for the project, instead of plain CSS. Not just because it was a requirement for this sprint, but also because it will genuinely be useful. Tailwind's utility-first design makes it a good fit for small or nascent project. Not using a CSS Framework is a legitimate option. We are forgoing the this simplicity in favor of the scalability of the Tailwind framework. What it costs: a little bit of a learning curve, repetitive build steps, extra dev dependencies, and potentially more difficult troubleshooting. Choosing plain CSS would have cost more upkeep with the task card displays, resulting in possibly inconsistency but also having to switch back and forth between files. This version is better because we can see in the markup exactly what the styles are, and we can easily edit utilities, for example when we have to update the buttons for size and contrast for our accessibility update. We can just edit the .ejs file in place right at the element we need to style.
 
 \- John Emilian
 

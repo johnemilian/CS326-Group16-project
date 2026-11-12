@@ -2,16 +2,24 @@
 !theme sketchy-outline
 :Manager: as U1
 (mongoose)
+
 package "Browser" {
 
 package "http://localhost/tasks" as tasksPage {
+  (/views/partials/[...]) as partials
   (/views/tasks.ejs) as TV
   (/public/app.js) as client
 }
-(/public/style.css) as CSS
+(/public/output.css) as CSS
 TV <-- CSS
 }
+
+package "Tests" {
+  (/~__tests__/taskService.test.js) as TST
+}
+
 package "Server" as ES {
+
 
 package "Routers" {
 (/routes/tasks.js) as TRou
@@ -25,6 +33,8 @@ package "Services" {
 (/services/taskService.js) as TS
 }
 
+(result.js)
+
 package "Data" {
 (/repositories/taskRepository.js) as TRep
 }
@@ -32,15 +42,29 @@ package "Data" {
 package "MongoDB" as DB {
 
 }
-(Express)
+package "Tailwind input CSS files" as src {
 
 }
+
+(Express)
+(TailwindCSS) as TW
+
+(jest.unstable_mockModule) as mock
+
+partials -up-> TV
+src -left-> TW
+TW -up-> CSS
+partials --> TW
+client -[hidden]right-> TV
+TRou -left- tasksPage : GET/POST/PUT/DELETE
+TST -down-> TS
 U1 -- tasksPage
 Express -down- ES
 mongoose -up-> TRep
+Tests -[#gray]right- mock : tasksRepository mocked by
 TRou -down- TC
-TS -down- TC
+TS -down- TC : tasksDto.js
 TS -down- TRep
-tasksPage -right- TRou : GET/POST/PUT/DELETE
+TRep -[#gray]-- mock
 Data -down- DB
 @enduml
