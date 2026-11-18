@@ -11,7 +11,7 @@ export const index = async (req, res) => {
 // fragment (one task card) to swap into the page; anything else gets JSON.
 export const create = async (req, res) => {
   const fromHtmx = req.get("HX-Request") === "true";
-  const result = await tasksService.createTask(req.body);
+  const result = await tasksService.createTask(req.body, req.user);
   if (!result.ok) {
     if (fromHtmx) {
       res.status(result.error.status).type("text/plain").send(result.error.message);

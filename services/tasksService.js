@@ -35,7 +35,7 @@ export const listTasks = async () => (await getAll()).map(toTaskDto);
 export const createTask = async (data) => {
   const result = validateTask(data);
   if (!result.ok) return result;
-  return Ok(toTaskDto(await create(result.value)));
+  return Ok(toTaskDto(await create({ ...result.value, ownerId: actor.id })));
 };
 
 export const updateTask = async (id, data) => {
