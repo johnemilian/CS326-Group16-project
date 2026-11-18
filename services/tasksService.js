@@ -49,15 +49,6 @@ export const createTask = async (data, actor) => {
   return Ok(toTaskDto(await create({ ...result.value, ownerId: actor.id })));
 };
 
-export const getTaskForEdit = async (id, actor) => {
-  const existing = await findById(id);
-  if (!existing) return Err({ status: 404, message: "Entry not found" });
-  if (!(await isOwnerOrMgr(existing, actor.id))) {
-    return Err({ status: 403, message: "You do not have permission to modify this task." });
-  }
-  return Ok(toTaskDto(existing));
-};
-
 export const updateTask = async (id, data, actor) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
