@@ -8,13 +8,17 @@
     "build:css": "tailwindcss -i ./src/input.css -o ./public/output.css"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "connect-mongo": "^6.0.0",
+    "dotenv": "^18.0.10",
     "ejs": "^6.0.1",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "mongoose": "^9.11.2"
   },
   "devDependencies": {
-    "jest": "^30.5.2",
     "@tailwindcss/cli": "^4.3.3",
+    "jest": "^30.5.2",
     "tailwindcss": "^4.3.3"
   }
 }
