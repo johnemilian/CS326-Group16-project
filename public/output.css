@@ -1,4 +1,4 @@
-/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.4 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -9,14 +9,14 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-amber-50: oklch(98.7% 0.022 95.277);
-    --color-amber-500: oklch(76.9% 0.188 70.08);
-    --color-amber-600: oklch(66.6% 0.179 58.318);
+    --color-amber-700: oklch(55.5% 0.163 48.998);
+    --color-amber-800: oklch(47.3% 0.137 46.201);
     --color-cyan-800: oklch(45% 0.085 224.283);
     --color-sky-50: oklch(97.7% 0.013 236.62);
     --color-sky-700: oklch(50% 0.134 242.749);
-    --color-rose-700: oklch(51.4% 0.222 16.935);
-    --color-gray-200: oklch(92.8% 0.006 264.531);
+    --color-rose-800: oklch(45.5% 0.188 13.697);
     --color-gray-300: oklch(87.2% 0.01 258.338);
+    --color-gray-400: oklch(70.7% 0.022 261.325);
     --color-gray-600: oklch(44.6% 0.03 256.802);
     --spacing: 0.25rem;
     --radius-sm: 0.25rem;
@@ -222,9 +222,6 @@
   .hidden {
     display: none;
   }
-  .inline {
-    display: inline;
-  }
   .table {
     display: table;
   }
@@ -280,20 +277,20 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 2px;
   }
-  .border-amber-600 {
-    border-color: var(--color-amber-600);
+  .border-amber-800 {
+    border-color: var(--color-amber-800);
   }
   .border-cyan-800 {
     border-color: var(--color-cyan-800);
   }
-  .border-gray-200 {
-    border-color: var(--color-gray-200);
-  }
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
-  .border-rose-700 {
-    border-color: var(--color-rose-700);
+  .border-gray-400 {
+    border-color: var(--color-gray-400);
+  }
+  .border-rose-800 {
+    border-color: var(--color-rose-800);
   }
   .bg-sky-700 {
     background-color: var(--color-sky-700);
@@ -307,8 +304,8 @@
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
   }
-  .text-amber-600 {
-    color: var(--color-amber-600);
+  .text-amber-800 {
+    color: var(--color-amber-800);
   }
   .text-cyan-800 {
     color: var(--color-cyan-800);
@@ -316,8 +313,8 @@
   .text-gray-600 {
     color: var(--color-gray-600);
   }
-  .text-rose-700 {
-    color: var(--color-rose-700);
+  .text-rose-800 {
+    color: var(--color-rose-800);
   }
   .text-sky-50 {
     color: var(--color-sky-50);
@@ -325,20 +322,13 @@
   .lowercase {
     text-transform: lowercase;
   }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
+  :is(:where(.group\/task-card)[data-priority="true"] .group-data-\[priority\=true\]\/task-card\:bg-amber-700) {
+    background-color: var(--color-amber-700);
   }
-  .filter {
-    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
-  }
-  .group-data-\[priority\=true\]\/task-card\:bg-amber-500:is(:where(.group\/task-card)[data-priority="true"] *) {
-    background-color: var(--color-amber-500);
-  }
-  .group-data-\[priority\=true\]\/task-card\:text-amber-50:is(:where(.group\/task-card)[data-priority="true"] *) {
+  :is(:where(.group\/task-card)[data-priority="true"] .group-data-\[priority\=true\]\/task-card\:text-amber-50) {
     color: var(--color-amber-50);
   }
-  .group-data-\[priority\=true\]\/task-card\:uppercase:is(:where(.group\/task-card)[data-priority="true"] *) {
+  :is(:where(.group\/task-card)[data-priority="true"] .group-data-\[priority\=true\]\/task-card\:uppercase) {
     text-transform: uppercase;
   }
   .disabled\:cursor-not-allowed:disabled {
@@ -400,7 +390,7 @@
     color: white;
   }
   .edit-form .cancel-btn {
-    background-color: #888;
+    background-color: #555;
   }
 }
 @layer base {
@@ -539,7 +529,7 @@
     color: white;
   }
   .edit-form .cancel-btn {
-    background-color: #888;
+    background-color: #555;
   }
 }
 @property --tw-border-style {
@@ -547,82 +537,10 @@
   inherits: false;
   initial-value: solid;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
-@property --tw-blur {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-brightness {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-contrast {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-grayscale {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-hue-rotate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-invert {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-opacity {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-saturate {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-sepia {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-drop-shadow {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-drop-shadow-color {
-  syntax: "*";
-  inherits: false;
-}
-@property --tw-drop-shadow-alpha {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-@property --tw-drop-shadow-size {
-  syntax: "*";
-  inherits: false;
-}
 @layer properties {
-  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
       --tw-border-style: solid;
-      --tw-outline-style: solid;
-      --tw-blur: initial;
-      --tw-brightness: initial;
-      --tw-contrast: initial;
-      --tw-grayscale: initial;
-      --tw-hue-rotate: initial;
-      --tw-invert: initial;
-      --tw-opacity: initial;
-      --tw-saturate: initial;
-      --tw-sepia: initial;
-      --tw-drop-shadow: initial;
-      --tw-drop-shadow-color: initial;
-      --tw-drop-shadow-alpha: 100%;
-      --tw-drop-shadow-size: initial;
     }
   }
 }
