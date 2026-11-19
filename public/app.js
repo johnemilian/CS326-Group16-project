@@ -1,3 +1,5 @@
+// client-side script public/app.js
+
 // Adding a task is handled by htmx (see the hx-* attributes on #task-form in
 // views/tasks.ejs). This file handles edit, delete and priority.
 const list = document.querySelector("#tasks");
@@ -37,6 +39,7 @@ const fetchJSON = async (url, options) => {
 // markup if someone typed a <script> or <img> tag.
 const detailFields = [
   ["station", "Station"],
+  ["status", "Status"],
   ["assigner", "Assigner"],
   ["assignee", "Assignee"],
   ["deadline", "Deadline"],
@@ -165,6 +168,20 @@ list.addEventListener("click", async (event) => {
       item.dataset.priority = updated.priority;
     } catch (error) {
       alert(`Your priority status was not updated. ${error.message}`);
+    }
+    return;
+  }
+
+  if (event.target.matches(".completed-btn")) {
+    const item = event.target.closest("li");
+    const id = item.dataset.id;
+    try {
+      const updated = await fetchJSON(`/tasks/${id}/completed`, {
+        method: "PATCH",
+      });
+      item.dataset.completed = updated.completed;
+    } catch (error) {
+      alert(`Your completed status was not updated. ${error.message}`);
     }
     return;
   }
