@@ -11,7 +11,7 @@ export const index = async (req, res) => {
 // fragment (one task card) to swap into the page; anything else gets JSON.
 export const create = async (req, res) => {
   const fromHtmx = req.get("HX-Request") === "true";
-  const result = await tasksService.createTask(req.body);
+  const result = await tasksService.createTask(req.body, req.user);
   if (!result.ok) {
     if (fromHtmx) {
       res.status(result.error.status).type("text/plain").send(result.error.message);
@@ -33,7 +33,7 @@ export const update = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.updateTask(id, req.body);
+  const result = await tasksService.updateTask(id, req.body, req.user);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
@@ -47,7 +47,7 @@ export const destroy = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.deleteTask(id);
+  const result = await tasksService.deleteTask(id, req.user);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;
@@ -61,7 +61,7 @@ export const togglePriority = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.togglePriority(id);
+  const result = await tasksService.togglePriority(id, req.user);
   if (!result.ok) {
     res.status(result.error.status).json({ error: result.error.message });
     return;

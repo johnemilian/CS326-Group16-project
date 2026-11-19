@@ -1,6 +1,17 @@
 import { Ok, Err } from "../result.js";
 import { getAll, findById, create, updateById, removeById } from "../repositories/tasksRepository.js";
+import * as usersRepository from "../repositories/usersRepository.js";
 import { toTaskDto } from "../dtos/taskDto.js";
+
+const isOwnerOrMgr = async (entry, actorId) => {
+  if (entry.ownerId.toString() === actorId) return true;
+  const account = await usersRepository.findById(actorId);
+  return ["admin", "manager"].includes(account?.role);
+};
+const isMgr = async (entry, actorId) => {
+  const account = await usersRepository.findById(actorId);
+  return ["admin", "manager"].includes(account?.role);
+};
 
 const textFields = ["description", "station", "assigner", "assignee", "prerequisites"];
 
@@ -32,31 +43,40 @@ const validateTask = (data) => {
 
 export const listTasks = async () => (await getAll()).map(toTaskDto);
 
-export const createTask = async (data) => {
+export const createTask = async (data, actor) => {
   const result = validateTask(data);
   if (!result.ok) return result;
-  return Ok(toTaskDto(await create(result.value)));
+  return Ok(toTaskDto(await create({ ...result.value, ownerId: actor.id })));
 };
 
-export const updateTask = async (id, data) => {
+export const updateTask = async (id, data, actor) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
+  if (!(await isOwnerOrMgr(existing, actor.id))) {
+    return Err({ status: 403, message: "You do not have permission to modify this task." });
+  }
 
   const result = validateTask(data);
   if (!result.ok) return result;
   return Ok(toTaskDto(await updateById(id, result.value)));
 };
 
-export const deleteTask = async (id) => {
+export const deleteTask = async (id, actor) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
+  if (!(await isOwnerOrMgr(existing, actor.id))) {
+    return Err({ status: 403, message: "No, you are not authorized to delete this task." });
+  }
   await removeById(id);
   return Ok(null);
 };
 
-export const togglePriority = async (id) => {
+export const togglePriority = async (id, actor) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
+  if (!(await isMgr(existing, actor.id))) {
+    return Err({ status: 403, message: "Must be manager to toggle priority of this task." });
+  }
   const updated = await updateById(id, { priority: !existing.priority });
   return Ok(toTaskDto(updated));
 };
