@@ -1,3 +1,5 @@
+// services/tasksService.js
+
 import { Ok, Err } from "../result.js";
 import { getAll, findById, create, updateById, removeById } from "../repositories/tasksRepository.js";
 import { toTaskDto } from "../dtos/taskDto.js";
@@ -58,5 +60,12 @@ export const togglePriority = async (id) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
   const updated = await updateById(id, { priority: !existing.priority });
+  return Ok(toTaskDto(updated));
+};
+
+export const toggleCompleted = async (id) => {
+  const existing = await findById(id);
+  if (!existing) return Err({ status: 404, message: "Task not found" });
+  const updated = await updateById(id, { completed: !existing.completed });
   return Ok(toTaskDto(updated));
 };
