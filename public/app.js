@@ -96,12 +96,14 @@ const makeTextarea = (name, value) => {
   const textarea = document.createElement("textarea");
   textarea.name = name;
   textarea.value = value;
+  textarea.setAttribute("aria-label", name);
   return textarea;
 };
 
 const startEdit = (item) => {
   const display = item.querySelector(".task-display");
   const buttons = item.querySelectorAll(".edit-btn, .delete-btn");
+  const editButton = item.querySelector(".edit-btn");
 
   const editForm = document.createElement("form");
   editForm.className = "edit-form";
@@ -135,6 +137,7 @@ const startEdit = (item) => {
     buttons.forEach((button) => {
       button.hidden = false;
     });
+    editButton.focus();
   });
 
   editForm.addEventListener("submit", async (event) => {
@@ -157,6 +160,7 @@ const startEdit = (item) => {
       buttons.forEach((button) => {
         button.hidden = false;
       });
+      editButton.focus();
     } catch (error) {
       alert(`Your changes were not saved. ${error.message}`);
     } finally {
@@ -179,6 +183,9 @@ list.addEventListener("click", async (event) => {
         method: "PATCH",
       });
       item.dataset.priority = updated.priority;
+      item
+        .querySelector(".priority-btn")
+        .setAttribute("aria-pressed", updated.priority);
     } catch (error) {
       alert(`Your priority status was not updated. ${error.message}`);
     }
@@ -192,7 +199,14 @@ list.addEventListener("click", async (event) => {
   const id = item.dataset.id;
 
   const previousItem = item.previousElementSibling;
-  previousItem?.focus();
+  const nextItem = item.nextElementSibling;
+  if (previousItem) {
+    previousItem.querySelector(".delete-btn").focus();
+  } else if (nextItem) {
+    nextItem.querySelector(".delete-btn").focus();
+  } else {
+    document.querySelector('input[name="title"]').focus();
+  }
 
   button.disabled = true;
   try {
