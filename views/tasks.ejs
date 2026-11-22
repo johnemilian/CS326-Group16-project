@@ -16,14 +16,43 @@
             hx-on::after-request="if (event.detail.successful) this.reset()"
             hx-on::response-error="alert('Your task was not saved. ' + event.detail.xhr.responseText)"
             hx-on::send-error="alert('Your task was not saved. Could not reach the server.')">
-        <input class="form-input flex-2" type="text" name="title" placeholder="Title">
-        <input class="form-input flex-1" type="date" name="deadline" aria-label="Deadline">
-        <%# 'resize' in following textarea element to allow resize along both axes to override default which is resize:vertical only %>
-        <textarea class="form-input resize basis-full" name="description" placeholder="Description"></textarea>
-        <input class="form-input flex-1" type="text" name="station" placeholder="Station">
-        <input class="form-input flex-1" type="text" name="assigner" placeholder="Assigner">
-        <input class="form-input flex-1" type="text" name="assignee" placeholder="Assignee">
-        <input class="form-input max-sm:basis-full sm:flex-1" type="text" name="prerequisites" placeholder="Prerequisites">
+
+        <div class="flex flex-col flex-1">
+          <label for="title" class="text-sm font-medium mb-1">Title</label>
+          <input class="form-input" type="text" name="title" id="title" placeholder="Title">
+        </div>
+
+        <div class="flex flex-col flex-1">
+          <label for="deadline" class="text-sm font-medium mb-1">Deadline</label>
+          <input class="form-input" type="date" name="deadline" aria-label="Deadline">
+        </div>
+
+        <div class="flex flex-col flex-3">
+          <%# 'resize' in following textarea element to allow resize along both axes to override default which is resize:vertical only %>
+          <label for="description" class="text-sm font-medium mb-1">Description</label>
+          <textarea class="form-input resize basis-full" name="description" placeholder="Description"></textarea>
+        </div>
+
+        <div class="flex flex-col flex-1">
+          <label for="station" class="text-sm font-medium mb-1">Station</label>
+          <input class="form-input" type="text" name="station" placeholder="Station">
+        </div>
+
+        <div class="flex flex-col flex-1">
+          <label for="assigner" class="text-sm font-medium mb-1">Assigner</label>
+          <input class="form-input" type="text" name="assigner" placeholder="Assigner">
+        </div>
+
+        <div class="flex flex-col flex-1">
+          <label for="Assignee" class="text-sm font-medium mb-1">Assignee</label>
+          <input class="form-input" type="text" name="assignee" placeholder="Assignee">
+        </div>
+
+        <div class="flex flex-col flex-2">
+          <label for="Prerequisites" class="text-sm font-medium mb-1">Prerequisites</label>
+          <input class="form-input max-sm:basis-full sm:flex-1" type="text" name="prerequisites" placeholder="Prerequisites">
+        </div>
+
         <button class="btn ml-auto bg-sky-700 text-sky-50 border-0" type="submit">Add task</button>
       </form>
       <ul class="flex flex-col gap-3 p-0 list-none" id="tasks">

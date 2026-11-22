@@ -13,6 +13,10 @@ a {
   --main-bg-color: seashell;
 }
 
+*:focus-visible {
+  @apply outline-3 outline-sky-600 outline-offset-2;
+}
+
 * {
   box-sizing: border-box;
 }
