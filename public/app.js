@@ -5,7 +5,8 @@
 const list = document.querySelector("#tasks");
 
 // Every request gives up after five seconds instead of waiting forever.
-const timedFetch = (url, options = {}) => fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
+const timedFetch = (url, options = {}) =>
+  fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
 
 // Send a request and return the JSON the server answered with. Anything
 // that goes wrong (no answer within five seconds, no connection, an error
@@ -17,7 +18,9 @@ const fetchJSON = async (url, options) => {
     response = await timedFetch(url, options);
   } catch (error) {
     throw new Error(
-      error.name === "TimeoutError" ? "The server did not answer within five seconds." : "Could not reach the server.",
+      error.name === "TimeoutError"
+        ? "The server did not answer within five seconds."
+        : "Could not reach the server.",
     );
   }
 
@@ -51,7 +54,9 @@ const fillDisplay = (display, task) => {
   title.textContent = `${task.title}:`;
   display.replaceChildren(title, ` ${task.description ?? ""}`);
 
-  const details = detailFields.filter(([field]) => task[field]).map(([field, label]) => `${label}: ${task[field]}`);
+  const details = detailFields
+    .filter(([field]) => task[field])
+    .map(([field, label]) => `${label}: ${task[field]}`);
   if (details.length) {
     const small = document.createElement("small");
     small.className = "task-details";
@@ -61,7 +66,11 @@ const fillDisplay = (display, task) => {
 };
 
 const setData = (item, task) => {
-  for (const field of ["title", "description", ...detailFields.map(([field]) => field)]) {
+  for (const field of [
+    "title",
+    "description",
+    ...detailFields.map(([field]) => field),
+  ]) {
     item.dataset[field] = task[field] ?? "";
   }
 };
@@ -90,12 +99,14 @@ const makeTextarea = (name, value) => {
   const textarea = document.createElement("textarea");
   textarea.name = name;
   textarea.value = value;
+  textarea.setAttribute("aria-label", name);
   return textarea;
 };
 
 const startEdit = (item) => {
   const display = item.querySelector(".task-display");
   const buttons = item.querySelectorAll(".edit-btn, .delete-btn");
+  const editButton = item.querySelector(".edit-btn");
 
   const editForm = document.createElement("form");
   editForm.className = "edit-form";
@@ -108,7 +119,12 @@ const startEdit = (item) => {
     makeButton("cancel-btn", "Cancel"),
     makeTextarea("description", item.dataset.description),
     ...detailFields.map(([field, label]) =>
-      makeInput(field, item.dataset[field], label, field === "deadline" ? "date" : "text"),
+      makeInput(
+        field,
+        item.dataset[field],
+        label,
+        field === "deadline" ? "date" : "text",
+      ),
     ),
   );
 
@@ -117,11 +133,14 @@ const startEdit = (item) => {
     button.hidden = true;
   });
 
+  editForm.querySelector('input[name="title"]').focus();
+
   editForm.querySelector(".cancel-btn").addEventListener("click", () => {
     editForm.replaceWith(display);
     buttons.forEach((button) => {
       button.hidden = false;
     });
+    editButton.focus();
   });
 
   editForm.addEventListener("submit", async (event) => {
@@ -144,6 +163,7 @@ const startEdit = (item) => {
       buttons.forEach((button) => {
         button.hidden = false;
       });
+      editButton.focus();
     } catch (error) {
       alert(`Your changes were not saved. ${error.message}`);
     } finally {
@@ -166,6 +186,9 @@ list.addEventListener("click", async (event) => {
         method: "PATCH",
       });
       item.dataset.priority = updated.priority;
+      item
+        .querySelector(".priority-btn")
+        .setAttribute("aria-pressed", updated.priority);
     } catch (error) {
       alert(`Your priority status was not updated. ${error.message}`);
     }
@@ -191,6 +214,16 @@ list.addEventListener("click", async (event) => {
   const button = event.target;
   const item = button.closest("li");
   const id = item.dataset.id;
+
+  const previousItem = item.previousElementSibling;
+  const nextItem = item.nextElementSibling;
+  if (previousItem) {
+    previousItem.querySelector(".delete-btn").focus();
+  } else if (nextItem) {
+    nextItem.querySelector(".delete-btn").focus();
+  } else {
+    document.querySelector('input[name="title"]').focus();
+  }
 
   button.disabled = true;
   try {
