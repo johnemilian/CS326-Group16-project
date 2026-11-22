@@ -1,9 +1,13 @@
+// repositories/tasksRepository.js
+
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: false },
+    status: { type: String, required: false, default: "not started" },
+    completed: { type: Boolean, default: false },
     station: { type: String, required: false },
     assigner: { type: String, required: false },
     assignee: { type: String, required: false },

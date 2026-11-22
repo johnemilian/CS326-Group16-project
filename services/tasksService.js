@@ -1,3 +1,5 @@
+// services/tasksService.js
+
 import { Ok, Err } from "../result.js";
 import { getAll, findById, create, updateById, removeById } from "../repositories/tasksRepository.js";
 import * as usersRepository from "../repositories/usersRepository.js";
@@ -13,7 +15,7 @@ const isMgr = async (entry, actorId) => {
   return ["admin", "manager"].includes(account?.role);
 };
 
-const textFields = ["description", "station", "assigner", "assignee", "prerequisites"];
+const textFields = ["description", "station", "assigner", "assignee", "prerequisites", "status"];
 
 const validateTask = (data) => {
   const { title, deadline } = data;
@@ -78,5 +80,20 @@ export const togglePriority = async (id, actor) => {
     return Err({ status: 403, message: "Must be manager to toggle priority of this task." });
   }
   const updated = await updateById(id, { priority: !existing.priority });
+  return Ok(toTaskDto(updated));
+};
+
+export const toggleCompleted = async (id) => {
+  const existing = await findById(id);
+  if (!existing) return Err({ status: 404, message: "Task not found" });
+
+  const completed = !existing.completed;
+  const changes = { completed };
+
+  if (completed && existing.status === "not started") {
+    changes.status = "";
+  }
+
+  const updated = await updateById(id, changes);
   return Ok(toTaskDto(updated));
 };
