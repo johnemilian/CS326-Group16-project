@@ -5,8 +5,7 @@
 const list = document.querySelector("#tasks");
 
 // Every request gives up after five seconds instead of waiting forever.
-const timedFetch = (url, options = {}) =>
-  fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
+const timedFetch = (url, options = {}) => fetch(url, { ...options, signal: AbortSignal.timeout(5000) });
 
 // Send a request and return the JSON the server answered with. Anything
 // that goes wrong (no answer within five seconds, no connection, an error
@@ -18,9 +17,7 @@ const fetchJSON = async (url, options) => {
     response = await timedFetch(url, options);
   } catch (error) {
     throw new Error(
-      error.name === "TimeoutError"
-        ? "The server did not answer within five seconds."
-        : "Could not reach the server.",
+      error.name === "TimeoutError" ? "The server did not answer within five seconds." : "Could not reach the server.",
     );
   }
 
@@ -54,9 +51,7 @@ const fillDisplay = (display, task) => {
   title.textContent = `${task.title}:`;
   display.replaceChildren(title, ` ${task.description ?? ""}`);
 
-  const details = detailFields
-    .filter(([field]) => task[field])
-    .map(([field, label]) => `${label}: ${task[field]}`);
+  const details = detailFields.filter(([field]) => task[field]).map(([field, label]) => `${label}: ${task[field]}`);
   if (details.length) {
     const small = document.createElement("small");
     small.className = "task-details";
@@ -66,11 +61,7 @@ const fillDisplay = (display, task) => {
 };
 
 const setData = (item, task) => {
-  for (const field of [
-    "title",
-    "description",
-    ...detailFields.map(([field]) => field),
-  ]) {
+  for (const field of ["title", "description", ...detailFields.map(([field]) => field)]) {
     item.dataset[field] = task[field] ?? "";
   }
 };
@@ -105,7 +96,7 @@ const makeTextarea = (name, value) => {
 
 const startEdit = (item) => {
   const display = item.querySelector(".task-display");
-  const buttons = item.querySelectorAll(".edit-btn, .delete-btn");
+  const buttons = item.querySelectorAll(".edit-btn, .delete-btn, .completed-btn");
   const editButton = item.querySelector(".edit-btn");
 
   const editForm = document.createElement("form");
@@ -119,12 +110,7 @@ const startEdit = (item) => {
     makeButton("cancel-btn", "Cancel"),
     makeTextarea("description", item.dataset.description),
     ...detailFields.map(([field, label]) =>
-      makeInput(
-        field,
-        item.dataset[field],
-        label,
-        field === "deadline" ? "date" : "text",
-      ),
+      makeInput(field, item.dataset[field], label, field === "deadline" ? "date" : "text"),
     ),
   );
 
@@ -186,9 +172,7 @@ list.addEventListener("click", async (event) => {
         method: "PATCH",
       });
       item.dataset.priority = updated.priority;
-      item
-        .querySelector(".priority-btn")
-        .setAttribute("aria-pressed", updated.priority);
+      item.querySelector(".priority-btn").setAttribute("aria-pressed", updated.priority);
     } catch (error) {
       alert(`Your priority status was not updated. ${error.message}`);
     }
@@ -203,6 +187,11 @@ list.addEventListener("click", async (event) => {
         method: "PATCH",
       });
       item.dataset.completed = updated.completed;
+      item.dataset.status = updated.status;
+      const display = item.querySelector(".task-display");
+      fillDisplay(display, updated);
+
+      item.querySelector(".completed-btn").setAttribute("aria-pressed", updated.completed);
     } catch (error) {
       alert(`Your completed status was not updated. ${error.message}`);
     }
