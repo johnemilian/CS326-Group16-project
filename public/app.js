@@ -1,3 +1,5 @@
+// client-side script public/app.js
+
 // Adding a task is handled by htmx (see the hx-* attributes on #task-form in
 // views/tasks.ejs). This file handles edit, delete and priority.
 const list = document.querySelector("#tasks");
@@ -37,6 +39,7 @@ const fetchJSON = async (url, options) => {
 // markup if someone typed a <script> or <img> tag.
 const detailFields = [
   ["station", "Station"],
+  ["status", "Status"],
   ["assigner", "Assigner"],
   ["assignee", "Assignee"],
   ["deadline", "Deadline"],
@@ -87,12 +90,14 @@ const makeTextarea = (name, value) => {
   const textarea = document.createElement("textarea");
   textarea.name = name;
   textarea.value = value;
+  textarea.setAttribute("aria-label", name);
   return textarea;
 };
 
 const startEdit = (item) => {
   const display = item.querySelector(".task-display");
-  const buttons = item.querySelectorAll(".edit-btn, .delete-btn");
+  const buttons = item.querySelectorAll(".edit-btn, .delete-btn, .completed-btn");
+  const editButton = item.querySelector(".edit-btn");
 
   const editForm = document.createElement("form");
   editForm.className = "edit-form";
@@ -114,11 +119,14 @@ const startEdit = (item) => {
     button.hidden = true;
   });
 
+  editForm.querySelector('input[name="title"]').focus();
+
   editForm.querySelector(".cancel-btn").addEventListener("click", () => {
     editForm.replaceWith(display);
     buttons.forEach((button) => {
       button.hidden = false;
     });
+    editButton.focus();
   });
 
   editForm.addEventListener("submit", async (event) => {
@@ -141,6 +149,7 @@ const startEdit = (item) => {
       buttons.forEach((button) => {
         button.hidden = false;
       });
+      editButton.focus();
     } catch (error) {
       alert(`Your changes were not saved. ${error.message}`);
     } finally {
@@ -163,8 +172,28 @@ list.addEventListener("click", async (event) => {
         method: "PATCH",
       });
       item.dataset.priority = updated.priority;
+      item.querySelector(".priority-btn").setAttribute("aria-pressed", updated.priority);
     } catch (error) {
       alert(`Your priority status was not updated. ${error.message}`);
+    }
+    return;
+  }
+
+  if (event.target.matches(".completed-btn")) {
+    const item = event.target.closest("li");
+    const id = item.dataset.id;
+    try {
+      const updated = await fetchJSON(`/tasks/${id}/completed`, {
+        method: "PATCH",
+      });
+      item.dataset.completed = updated.completed;
+      item.dataset.status = updated.status;
+      const display = item.querySelector(".task-display");
+      fillDisplay(display, updated);
+
+      item.querySelector(".completed-btn").setAttribute("aria-pressed", updated.completed);
+    } catch (error) {
+      alert(`Your completed status was not updated. ${error.message}`);
     }
     return;
   }
@@ -174,6 +203,16 @@ list.addEventListener("click", async (event) => {
   const button = event.target;
   const item = button.closest("li");
   const id = item.dataset.id;
+
+  const previousItem = item.previousElementSibling;
+  const nextItem = item.nextElementSibling;
+  if (previousItem) {
+    previousItem.querySelector(".delete-btn").focus();
+  } else if (nextItem) {
+    nextItem.querySelector(".delete-btn").focus();
+  } else {
+    document.querySelector('input[name="title"]').focus();
+  }
 
   button.disabled = true;
   try {
