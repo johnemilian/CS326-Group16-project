@@ -10,7 +10,7 @@ const isOwnerOrMgr = async (task, actorId) => {
   const account = await usersRepository.findById(actorId);
   return ["admin", "manager"].includes(account?.role);
 };
-const isOwner = async (task, actorId) => {
+const isOwner = (task, actorId) => {
   if (task.ownerId.toString() === actorId) {
     return true;
   }
