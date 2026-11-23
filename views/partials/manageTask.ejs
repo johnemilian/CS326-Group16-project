@@ -8,7 +8,7 @@
   <button class="priority-btn btn border-2 border-amber-800 text-amber-800 group-data-[priority=true]/task-card:text-amber-50 group-data-[priority=true]/task-card:bg-amber-700 group-data-[priority=true]/task-card:uppercase" aria-pressed="<%= task.priority %>" type="button">Priority</button>
   <% } %>
   <button class="completed-btn btn border-2 border-green-800 text-green-800 group-data-[completed=true]/task-card:text-green-50 group-data-[completed=true]/task-card:bg-green-700 group-data-[completed=true]/task-card:uppercase" aria-pressed="<%= task.completed %>" type="button">Completed</button>
-  <% if (task.isOwnerOrMgr) { %>
+  <% if (task.isOwner || task.isMgr) { %>
   <button class="edit-btn btn border-2 border-cyan-800 text-cyan-800" type="button">Edit</button>
   <button class="delete-btn btn border-2 border-rose-800 text-rose-800 disabled:opacity-50 disabled:cursor-not-allowed" type="button">Delete</button>
   <% } %>

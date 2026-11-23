@@ -17,4 +17,4 @@ export const toTaskDto = (task) => ({
 // For the page only, never for a JSON answer: the task plus whether the
 // person looking at it may change it, so task.ejs shows Edit and Delete only
 // to them. ownerId itself still never leaves the server.
-export const toTaskView = (task, isOwnerOrMgr, isMgr) => ({ ...toTaskDto(task), isOwnerOrMgr, isMgr });
+export const toTaskView = (task, isOwner, isMgr) => ({ ...toTaskDto(task), isOwner, isMgr });

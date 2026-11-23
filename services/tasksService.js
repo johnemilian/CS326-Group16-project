@@ -13,7 +13,7 @@ const isOwnerOrMgr = async (task, actorId) => {
 const isOwner = (task, actorId) => {
   return task.ownerId.toString() === actorId;
 };
-const isMgr = async (actorId) => {
+export const isMgr = async (actorId) => {
   const account = await usersRepository.findById(actorId);
   return ["admin", "manager"].includes(account?.role);
 };
@@ -51,7 +51,7 @@ export const listTasks = async (actor) => {
     return (await getAll()).map((task) => toTaskView(task, false, false));
   } else {
     const mgr = await isMgr(actor.id);
-    return (await getAll()).map((task) => toTaskView(task, isOwner(task, actor.id) || mgr, mgr));
+    return (await getAll()).map((task) => toTaskView(task, isOwner(task, actor.id), mgr));
   }
 };
 
