@@ -1,11 +1,15 @@
+// controllers/authController.js
+
 import * as authService from "../services/authService.js";
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 // express-session's methods take callbacks; these wrap them so the handlers can await.
-const regenerate = (req) => new Promise((resolve, reject) => req.session.regenerate((err) => (err ? reject(err) : resolve())));
+const regenerate = (req) =>
+  new Promise((resolve, reject) => req.session.regenerate((err) => (err ? reject(err) : resolve())));
 const save = (req) => new Promise((resolve, reject) => req.session.save((err) => (err ? reject(err) : resolve())));
-const destroy = (req) => new Promise((resolve, reject) => req.session.destroy((err) => (err ? reject(err) : resolve())));
+const destroy = (req) =>
+  new Promise((resolve, reject) => req.session.destroy((err) => (err ? reject(err) : resolve())));
 
 // A fresh session id on every login, so an id someone saw before login
 // (session fixation) is useless afterwards.
