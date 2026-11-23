@@ -2,9 +2,18 @@
   class="flex justify-between items-center pb-2 mb-4 border-b-2 border-gray-300"
 >
   <h1><strong>Farm Tasks</strong></h1>
-  <nav>
+  <nav class="flex items-center gap-4">
     <a class="" href="/">Home</a>
     <a class="" href="/tasks">View Tasks</a>
     <a class="" href="/tasks/manage">Manage Tasks</a>
+    <% if (locals.user) { %>
+      <span class="text-gray-600">Logged in as <strong><%= user.username %></strong> (<%= user.role %>)</span>
+      <form method="POST" action="/logout">
+        <button class="btn border border-gray-500 text-gray-700" type="submit">Log out</button>
+      </form>
+    <% } else { %>
+      <a href="/login">Log in</a>
+      <a href="/signup">Sign up</a>
+    <% } %>
   </nav>
 </header>
