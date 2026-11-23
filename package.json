@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
-    "build:css": "tailwindcss -i ./src/input.css -o ./public/output.css"
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/output.css",
+    "set-role": "node scripts/setRole.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
