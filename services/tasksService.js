@@ -3,14 +3,20 @@
 import { Ok, Err } from "../result.js";
 import { getAll, findById, create, updateById, removeById } from "../repositories/tasksRepository.js";
 import * as usersRepository from "../repositories/usersRepository.js";
-import { toTaskDto } from "../dtos/taskDto.js";
+import { toTaskDto, toTaskView } from "../dtos/taskDto.js";
 
-const isOwnerOrMgr = async (entry, actorId) => {
-  if (entry.ownerId.toString() === actorId) return true;
+const isOwnerOrMgr = async (task, actorId) => {
+  if (task.ownerId.toString() === actorId) return true;
   const account = await usersRepository.findById(actorId);
   return ["admin", "manager"].includes(account?.role);
 };
-const isMgr = async (entry, actorId) => {
+const isOwner = async (task, actorId) => {
+  if (task.ownerId.toString() === actorId) {
+    return true;
+  }
+  return false;
+};
+const isMgr = async (actorId) => {
   const account = await usersRepository.findById(actorId);
   return ["admin", "manager"].includes(account?.role);
 };
@@ -45,9 +51,7 @@ const validateTask = (data) => {
 
 export const listTasks = async (actor) => {
   return Promise.all(
-    (await getAll()).map(async (task) =>
-      toTaskView(task, await isOwnerOrMgr(task, actor.id), await isMgr(task, actor.id)),
-    ),
+    (await getAll()).map(async (task) => toTaskView(task, await isOwnerOrMgr(task, actor.id), await isMgr(actor.id))),
   );
 };
 
@@ -82,7 +86,7 @@ export const deleteTask = async (id, actor) => {
 export const togglePriority = async (id, actor) => {
   const existing = await findById(id);
   if (!existing) return Err({ status: 404, message: "Task not found" });
-  if (!(await isMgr(existing, actor.id))) {
+  if (!(await isMgr(actor.id))) {
     return Err({ status: 403, message: "Must be manager to toggle priority of this task." });
   }
   const updated = await updateById(id, { priority: !existing.priority });
