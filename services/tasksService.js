@@ -44,8 +44,11 @@ const validateTask = (data) => {
 };
 
 export const listTasks = async (actor) => {
-  allTasks = (await getAll()).map(toTaskDto);
-  return allTasks;
+  return Promise.all(
+    (await getAll()).map(async (task) =>
+      toTaskView(task, await isOwnerOrMgr(task, actor.id), await isMgr(task, actor.id)),
+    ),
+  );
 };
 
 export const createTask = async (data, actor) => {
