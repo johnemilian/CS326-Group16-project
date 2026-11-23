@@ -43,7 +43,10 @@ const validateTask = (data) => {
   return Ok(task);
 };
 
-export const listTasks = async () => (await getAll()).map(toTaskDto);
+export const listTasks = async (actor) => {
+  allTasks = (await getAll()).map(toTaskDto);
+  return allTasks;
+};
 
 export const createTask = async (data, actor) => {
   const result = validateTask(data);

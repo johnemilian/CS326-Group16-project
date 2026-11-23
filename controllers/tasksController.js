@@ -4,12 +4,12 @@ import * as tasksService from "../services/tasksService.js";
 import { isValidId } from "../repositories/tasksRepository.js";
 
 export const viewView = async (req, res) => {
-  const tasks = await tasksService.listTasks();
+  const tasks = await tasksService.listTasks(req.user);
   res.set("X-Total-Count", tasks.length);
   res.status(200).render("viewTasks", { title: "C.A. Farm Tasks", tasks });
 };
 export const manageView = async (req, res) => {
-  const tasks = await tasksService.listTasks();
+  const tasks = await tasksService.listTasks(req.user);
   res.set("X-Total-Count", tasks.length);
   res.status(200).render("manageTasks", { title: "Manage Tasks", tasks });
 };
