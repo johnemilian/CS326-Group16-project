@@ -84,7 +84,7 @@ export const toggleCompleted = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.toggleCompleted(id, req.user);
+  const result = await tasksService.toggleCompleted(id);
   if (!result.ok) {
     if (fromHtmx) {
       res.status(result.error.status).render("partials/viewTask", { task: result.value });
