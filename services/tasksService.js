@@ -11,10 +11,7 @@ const isOwnerOrMgr = async (task, actorId) => {
   return ["admin", "manager"].includes(account?.role);
 };
 const isOwner = (task, actorId) => {
-  if (task.ownerId.toString() === actorId) {
-    return true;
-  }
-  return false;
+  return task.ownerId.toString() === actorId;
 };
 const isMgr = async (actorId) => {
   const account = await usersRepository.findById(actorId);
@@ -50,9 +47,12 @@ const validateTask = (data) => {
 };
 
 export const listTasks = async (actor) => {
-  return Promise.all(
-    (await getAll()).map(async (task) => toTaskView(task, await isOwnerOrMgr(task, actor.id), await isMgr(actor.id))),
-  );
+  if (!actor) {
+    return (await getAll()).map((task) => toTaskView(task, false, false));
+  } else {
+    const mgr = await isMgr(actor.id);
+    return (await getAll()).map((task) => toTaskView(task, isOwner(task, actor.id) || mgr, mgr));
+  }
 };
 
 export const createTask = async (data, actor) => {
