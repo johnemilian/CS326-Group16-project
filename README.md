@@ -196,6 +196,20 @@ The only way to give someone the `manager` or `admin` role is the `set-role` scr
 
 The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
 
+### Health Route
+
+`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
+
+```json
+{ "status": "ok", "db": "connected", "uptime": 42 }
+```
+
+- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
+- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
+- `uptime` - seconds since the server started
+
+It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
+
 # Design Decisions
 
 ### MongoDB vs JSON File
