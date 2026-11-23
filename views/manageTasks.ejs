@@ -18,7 +18,7 @@
             hx-on::response-error="alert('Your task was not saved. ' + event.detail.xhr.responseText)"
             hx-on::send-error="alert('Your task was not saved. Could not reach the server.')">
 
-        <div class="flex flex-col flex-1">
+        <div class="flex flex-col flex-2">
           <label for="title" class="text-sm font-medium mb-1">Title</label>
           <input class="form-input" type="text" name="title" id="title" placeholder="Title">
         </div>
@@ -28,10 +28,10 @@
           <input class="form-input" type="date" name="deadline" aria-label="Deadline">
         </div>
 
-        <div class="flex flex-col flex-3">
+        <div class="flex flex-col basis-full">
           <%# 'resize' in following textarea element to allow resize along both axes to override default which is resize:vertical only %>
           <label for="description" class="text-sm font-medium mb-1">Description</label>
-          <textarea class="form-input resize basis-full" name="description" placeholder="Description"></textarea>
+          <textarea class="form-input resize-y" name="description" placeholder="Description"></textarea>
         </div>
 
         <div class="flex flex-col flex-1">
@@ -45,13 +45,13 @@
         </div>
 
         <div class="flex flex-col flex-1">
-          <label for="Assignee" class="text-sm font-medium mb-1">Assignee</label>
+          <label for="assignee" class="text-sm font-medium mb-1">Assignee</label>
           <input class="form-input" type="text" name="assignee" placeholder="Assignee">
         </div>
 
-        <div class="flex flex-col flex-2">
-          <label for="Prerequisites" class="text-sm font-medium mb-1">Prerequisites</label>
-          <input class="form-input max-sm:basis-full sm:flex-1" type="text" name="prerequisites" placeholder="Prerequisites">
+        <div class="flex flex-col max-sm:basis-full sm:flex-1">
+          <label for="prerequisites" class="text-sm font-medium mb-1">Prerequisites</label>
+          <input class="form-input" type="text" name="prerequisites" placeholder="Prerequisites">
         </div>
 
         <button class="btn ml-auto bg-sky-700 text-sky-50 border-0" type="submit">Add task</button>
