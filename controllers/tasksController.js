@@ -28,7 +28,8 @@ export const create = async (req, res) => {
     return;
   }
   if (fromHtmx) {
-    res.status(201).render("partials/manageTask", { task: result.value });
+    const mgr = await tasksService.isMgr(req.user.id);
+    res.status(201).render("partials/manageTask", { task: { ...result.value, isOwner: true, isMgr: mgr } });
     return;
   }
   res.status(201).json(result.value);
@@ -83,7 +84,7 @@ export const toggleCompleted = async (req, res) => {
     res.status(400).json({ error: "id must be a valid id" });
     return;
   }
-  const result = await tasksService.toggleCompleted(id);
+  const result = await tasksService.toggleCompleted(id, req.user);
   if (!result.ok) {
     if (fromHtmx) {
       res.status(result.error.status).render("partials/viewTask", { task: result.value });
