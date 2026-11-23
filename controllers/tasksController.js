@@ -28,7 +28,7 @@ export const create = async (req, res) => {
     return;
   }
   if (fromHtmx) {
-    const mgr = await tasksService.isMgr(req.user.id);
+    const mgr = ["admin", "manager"].includes(req.user.role);
     res.status(201).render("partials/manageTask", { task: { ...result.value, isOwner: true, isMgr: mgr } });
     return;
   }
