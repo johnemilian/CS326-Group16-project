@@ -61,11 +61,20 @@ Start the database:
 dc-up mongo
 ```
 
-Create a new database replacing `your-db-name`:
+Create your `.env` file from the template:
 
 ```bash
-echo "MONGODB_URI=mongodb://dev:devpassword@mongo:27017/your-db-name?authSource=admin" >> .env
+cp .env.example .env
 ```
+
+Then open `.env` and set both variables. The server refuses to start if either one is missing.
+
+| Variable         | What it is                                                                                                                                         |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MONGODB_URI`    | The MongoDB connection string. Change `group16` to name your own database.                                                                         |
+| `SESSION_SECRET` | The secret that signs the login session cookie. Use a long random string, generated with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+
+`.env` is git-ignored. Never commit it.
 
 Running locally:
 
@@ -89,7 +98,7 @@ npm install
 
 [Tailwind](https://tailwindcss.com/) and [TailwindCSS CLI](https://tailwindcss.com/docs/installation/tailwind-cli) are used in this project.
 
-To update the style sheet (`/public/style.css`) after any changes are made, run:
+To update the style sheet (`/public/output.css`) after any changes are made, run:
 
 ```bash
  npm run build:css
@@ -154,6 +163,52 @@ Existing tasks are **updated** at `PUT /tasks/:id`. A request to this endpoint i
 Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoint is made after a user clicks the 'Delete' button on a specific task. It sends a request to the endpoint matching the ID of the deleted entry., and the deleted task is immediately removed on their task list.
 
 Existing tasks have their priority toggled at `PATCH /tasks/:id/priority`. A request to this endpoint is made after a user clicks the 'Priority' button on a specific task. It sends a request to the endpoint matching the ID of the toggled entry, and the task is immediately toggled on their task list.
+
+### Authentication
+
+Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
+
+- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
+- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
+- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
+
+Each user has these fields:
+
+- Username - `text`, required, unique (case-insensitive)
+- Email - `text`, optional, unique
+- Password hash - `text`
+- Role - one of `farmer`, `manager`, `admin`
+
+#### Roles and making an admin
+
+Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
+
+The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
+
+1. The person signs up normally through `/signup`.
+1. Run the script with their username and the new role:
+
+   ```bash
+   npm run set-role -- <username> admin
+   ```
+
+   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
+
+The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
+
+### Health Route
+
+`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
+
+```json
+{ "status": "ok", "db": "connected", "uptime": 42 }
+```
+
+- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
+- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
+- `uptime` - seconds since the server started
+
+It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
 
 # Design Decisions
 
