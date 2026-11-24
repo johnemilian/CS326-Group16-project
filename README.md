@@ -138,59 +138,13 @@ Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoin
 
 Existing tasks have their priority toggled at `PATCH /tasks/:id/priority`. A request to this endpoint is made after a user clicks the 'Priority' button on a specific task. It sends a request to the endpoint matching the ID of the toggled entry, and the task is immediately toggled on their task list.
 
-### Authentication
-
-Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
-
-- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
-- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
-- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
-
-Each user has these fields:
-
-- Username - `text`, required, unique (case-insensitive)
-- Email - `text`, optional, unique
-- Password hash - `text`
-- Role - one of `farmer`, `manager`, `admin`
-
-#### Roles and making an admin
-
-Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
-
-The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
-
-1. The person signs up normally through `/signup`.
-1. Run the script with their username and the new role:
-
-   ```bash
-   npm run set-role -- <username> admin
-   ```
-
-   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
-
-The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
-
-### Health Route
-
-`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
-
-```json
-{ "status": "ok", "db": "connected", "uptime": 42 }
-```
-
-- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
-- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
-- `uptime` - seconds since the server started
-
-It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
-
 # Design Decisions
 
 ### MongoDB vs JSON File
 
 We decided to use MongoDB for our database instead of a JSON file. This was primarily for the benefit that it eliminates the possibility of race conditions occurring in a deployed application when multiple requests arrive simultaneously. The alternative option was a JSON file, similar to the one used early in the example project. This would have worked equivalently during the development stage, since only one request would have arrived at one time, but is much less practical in a real implementation. Despite this being easier and more intuitive to work with since the data is more exposed, we decided against it for the benefit of future proofing. Having all of our data in a database that remains the same through the duration of development instead of deciding to switch later requires much less work.
 
-\- Sam Wolke
+\- Sam Wolke (Sprint 2)
 
 ### Tailwind CSS vs no framework
 
@@ -214,7 +168,13 @@ We decided to make only the task title required in tasksService.js, while keepin
 
 We decided that it would be best for our test suite to mock the repository layer of the application. The alternative was testing using actual database data, which would have the benefit of guaranteeing that it would function as desired when deployed. When mocking the repository layer, if done incorrectly, we run the risk of our tests being inaccurate. However, this would not be worth its downsides, since it would have required that we ensure that stray testing data does not make its way into the database and database entries that we needed did not run into the chance of being harmed. Additionally, not using the actual database results in the test suite running significantly faster since a database connection does not need to be established.
 
-\- Sam Wolke
+\- Sam Wolke (Sprint 3)
+
+### Accessibility related focus changes
+
+We decided that when a task was deleted, and subsequently its listing and delete button were removed, that the users focus should land on the delete button of the previous task. In the case where the task is the first element in the list, the focus will instead land on the delete button of the next task. Finally, if there is no tasks remaining, the focus will return to the first field in the input form. The alternative to this fallback order was to always make the focus land on a specific element that persisted, like the first text field of the input form, which would make the outcome always known to the user. However, we decided against this because focus landing close to where it left makes navigation more natural and easier if multiple tasks needed to be deleted.
+
+\- Sam Wolke (Sprint 4)
 
 # System Diagram
 
@@ -255,6 +215,88 @@ The app received a visual overhaul using tailwind. This primarily altered the ap
 **After:**
 
 ![Image Showing After](private/sprint_3_after.png)
+
+# Sprint 4 Changes
+
+### Health Route
+
+`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
+
+```json
+{ "status": "ok", "db": "connected", "uptime": 42 }
+```
+
+- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
+- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
+- `uptime` - seconds since the server started
+
+It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
+
+### Authentication
+
+Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
+
+- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
+- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
+- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
+
+Each user has these fields:
+
+- Username - `text`, required, unique (case-insensitive)
+- Email - `text`, optional, unique
+- Password hash - `text`
+- Role - one of `farmer`, `manager`, `admin`
+
+### Roles and making an admin
+
+Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
+
+The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
+
+1. The person signs up normally through `/signup`.
+1. Run the script with their username and the new role:
+
+   ```bash
+   npm run set-role -- <username> admin
+   ```
+
+   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
+
+The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
+
+### Accessibility Changes
+
+The accessibility audit found the following problems:
+
+- Contrast too low on cancel button in edit form
+- Contrast too low on priority button
+- Button borders frequently too thin
+- Contrast too low on box outlines
+- Task list boxes identical to form input boxes
+- Farm tasks title text too small
+- Focus vanishes on edit button interaction
+- Focus vanishes on delete button interaction
+- Edit form description has no accessible name
+- Priority state is only shown visually
+- Focus border around buttons is difficult to see
+
+As a result, the following changes were made:
+
+- Darken cancel button in edit form
+- Darken priority button
+- Increase border width on priority button, edit button, and delete button
+- Darken border of task list
+- Bolded farm tasks title
+- Fix focus loss on edit button and delete button
+- Adjust focus to intuitive element when all tasks are deleted
+- Add aria-pressed to priority button
+- Add aria-label to description field in edit form
+- Add labels to the fields in the input form
+- Increase focus border size on buttons
+
+Accessibility fixes can be verified using an accessibility checker tool. Right click the window and choose `Inspect`, then click on the `Accessibility` tab, and finally select the issue to be checked in the 'Check for issues' dropdown.
+
+###
 
 # Team
 
