@@ -13,8 +13,14 @@ jest.unstable_mockModule("../repositories/tasksRepository.js", () => ({
   removeById: jest.fn(),
 }));
 
-const { listTasks, createTask, updateTask, deleteTask, togglePriority } =
-  await import("../services/tasksService.js");
+const {
+  listTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  togglePriority,
+  toggleCompleted,
+} = await import("../services/tasksService.js");
 const { getAll, findById, updateById, removeById, create } =
   await import("../repositories/tasksRepository.js");
 
@@ -322,5 +328,53 @@ describe("togglePriority", () => {
     expect(result.ok).toBe(true);
     expect(result.value.priority).toBe(false);
     expect(updateById).toHaveBeenCalledWith("fake-id", { priority: false });
+  });
+});
+
+describe("toggleCompleted", () => {
+  test("toggleCompleted returns a 404-shaped Err when the task does not exist", async () => {
+    findById.mockResolvedValueOnce(null);
+
+    const result = await toggleCompleted("000000000000000000000000");
+
+    expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(404);
+    expect(findById).toHaveBeenCalled();
+  });
+
+  test("toggleCompleted changes completed from false to true", async () => {
+    findById.mockResolvedValueOnce({
+      _id: "fake-id",
+      completed: false,
+    });
+
+    updateById.mockResolvedValueOnce({
+      _id: "fake-id",
+      completed: true,
+    });
+
+    const result = await toggleCompleted("fake-id");
+
+    expect(result.ok).toBe(true);
+    expect(result.value.completed).toBe(true);
+    expect(updateById).toHaveBeenCalledWith("fake-id", { completed: true });
+  });
+
+  test("toggleCompleted changes completed from true to false", async () => {
+    findById.mockResolvedValueOnce({
+      _id: "fake-id",
+      completed: true,
+    });
+
+    updateById.mockResolvedValueOnce({
+      _id: "fake-id",
+      completed: false,
+    });
+
+    const result = await toggleCompleted("fake-id");
+
+    expect(result.ok).toBe(true);
+    expect(result.value.completed).toBe(false);
+    expect(updateById).toHaveBeenCalledWith("fake-id", { completed: false });
   });
 });
