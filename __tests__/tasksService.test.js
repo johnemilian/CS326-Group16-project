@@ -349,6 +349,50 @@ describe("updateTask", () => {
     });
     expect(updateById).toHaveBeenCalledWith("fake-id", expect.objectContaining({ assignee: "new" }));
   });
+
+  test("ordinary non-owner is rejected with 403", async () => {
+    // to make sure expect(updateById).not.toHaveBeenCalled() does not deliver a false positive
+    updateById.mockClear();
+
+    findById.mockResolvedValueOnce({
+      _id: "fake-id",
+      title: "T",
+      description: "D",
+      completed: false,
+      assignee: "old",
+      status: "old",
+      assigner: "AR",
+      station: "S",
+      prerequisites: "PR",
+      priority: "PT",
+      deadline: null,
+      ownerId: { toString: () => "dave-id" },
+    });
+
+    usersRepository.findById.mockResolvedValueOnce({ role: "farmer" });
+
+    const result = await updateTask(
+      "fake-id",
+      {
+        title: "T",
+        description: "D",
+        completed: false,
+        assignee: "new",
+        status: "chaos",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+        priority: "PT",
+        deadline: null,
+      },
+      { id: "kevin-id" },
+    );
+
+    expect(usersRepository.findById).toHaveBeenCalledWith("kevin-id");
+    expect(result.ok).toBe(false);
+    expect(result.error.status).toBe(403);
+    expect(updateById).not.toHaveBeenCalled();
+  });
 });
 
 describe("deleteTask", () => {
