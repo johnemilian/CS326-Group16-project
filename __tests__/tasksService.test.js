@@ -200,9 +200,13 @@ describe("updateTask", () => {
   test("updateTask returns a 404-shaped Err when the task does not exist", async () => {
     findById.mockResolvedValueOnce(null);
 
-    const result = await updateTask("000000000000000000000000", {
-      title: "new",
-    });
+    const result = await updateTask(
+      "000000000000000000000000",
+      {
+        title: "new",
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
@@ -213,11 +217,16 @@ describe("updateTask", () => {
     findById.mockResolvedValueOnce({
       _id: "fake-id",
       title: "old",
+      ownerId: { toString: () => "cranjis-id" },
     });
 
-    const result = await updateTask("fake-id", {
-      title: "",
-    });
+    const result = await updateTask(
+      "fake-id",
+      {
+        title: "",
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
@@ -234,6 +243,7 @@ describe("updateTask", () => {
       station: "S",
       prerequisites: "PR",
       priority: "PT",
+      ownerId: { toString: () => "austin-id" },
     });
 
     updateById.mockResolvedValueOnce({
@@ -246,11 +256,16 @@ describe("updateTask", () => {
       prerequisites: "PR",
       priority: "PT",
       deadline: null,
+      ownerId: { toString: () => "austin-id" },
     });
 
-    const result = await updateTask("fake-id", {
-      title: "new",
-    });
+    const result = await updateTask(
+      "fake-id",
+      {
+        title: "new",
+      },
+      { id: "austin-id" },
+    );
 
     expect(result.ok).toBe(true);
     expect(result.value).toEqual({
