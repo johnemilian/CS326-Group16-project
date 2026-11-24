@@ -355,7 +355,7 @@ describe("deleteTask", () => {
   test("deleteTask returns a 404-shaped Err when the task does not exist", async () => {
     findById.mockResolvedValueOnce(null);
 
-    const result = await deleteTask("000000000000000000000000");
+    const result = await deleteTask("000000000000000000000000", { id: "cranjis-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
@@ -373,11 +373,12 @@ describe("deleteTask", () => {
       prerequisites: "PR",
       priority: "PT",
       deadline: null,
+      ownerId: { toString: () => "sally-id" },
     });
 
     removeById.mockResolvedValueOnce(undefined);
 
-    const result = await deleteTask("fake-id");
+    const result = await deleteTask("fake-id", { id: "sally-id" });
 
     expect(result.ok).toBe(true);
     expect(result.value).toBeNull();
@@ -389,7 +390,7 @@ describe("togglePriority", () => {
   test("togglePriority returns a 404-shaped Err when the task does not exist", async () => {
     findById.mockResolvedValueOnce(null);
 
-    const result = await togglePriority("000000000000000000000000");
+    const result = await togglePriority("000000000000000000000000", { id: "cranjis-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
@@ -400,14 +401,17 @@ describe("togglePriority", () => {
     findById.mockResolvedValueOnce({
       _id: "fake-id",
       priority: false,
+      ownerId: { toString: () => "rachel-id" },
     });
 
     updateById.mockResolvedValueOnce({
       _id: "fake-id",
       priority: true,
+      ownerId: { toString: () => "rachel-id" },
     });
 
-    const result = await togglePriority("fake-id");
+    usersRepository.findById.mockResolvedValueOnce({ role: "manager" });
+    const result = await togglePriority("fake-id", { id: "rachel-id" });
 
     expect(result.ok).toBe(true);
     expect(result.value.priority).toBe(true);
@@ -418,14 +422,17 @@ describe("togglePriority", () => {
     findById.mockResolvedValueOnce({
       _id: "fake-id",
       priority: true,
+      ownerId: { toString: () => "robin-id" },
     });
+
+    usersRepository.findById.mockResolvedValueOnce({ role: "manager" });
 
     updateById.mockResolvedValueOnce({
       _id: "fake-id",
       priority: false,
     });
 
-    const result = await togglePriority("fake-id");
+    const result = await togglePriority("fake-id", { id: "robin-id" });
 
     expect(result.ok).toBe(true);
     expect(result.value.priority).toBe(false);
@@ -437,7 +444,7 @@ describe("toggleCompleted", () => {
   test("toggleCompleted returns a 404-shaped Err when the task does not exist", async () => {
     findById.mockResolvedValueOnce(null);
 
-    const result = await toggleCompleted("000000000000000000000000");
+    const result = await toggleCompleted("000000000000000000000000", { id: "cranjis-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(404);
@@ -455,7 +462,7 @@ describe("toggleCompleted", () => {
       completed: true,
     });
 
-    const result = await toggleCompleted("fake-id");
+    const result = await toggleCompleted("fake-id", { id: "jaclyn-id" });
 
     expect(result.ok).toBe(true);
     expect(result.value.completed).toBe(true);
@@ -473,7 +480,7 @@ describe("toggleCompleted", () => {
       completed: false,
     });
 
-    const result = await toggleCompleted("fake-id");
+    const result = await toggleCompleted("fake-id", { id: "jaclyn-id" });
 
     expect(result.ok).toBe(true);
     expect(result.value.completed).toBe(false);
