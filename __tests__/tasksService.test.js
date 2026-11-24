@@ -13,16 +13,9 @@ jest.unstable_mockModule("../repositories/tasksRepository.js", () => ({
   removeById: jest.fn(),
 }));
 
-const {
-  listTasks,
-  createTask,
-  updateTask,
-  deleteTask,
-  togglePriority,
-  toggleCompleted,
-} = await import("../services/tasksService.js");
-const { getAll, findById, updateById, removeById, create } =
-  await import("../repositories/tasksRepository.js");
+const { listTasks, createTask, updateTask, deleteTask, togglePriority, toggleCompleted } =
+  await import("../services/tasksService.js");
+const { getAll, findById, updateById, removeById, create } = await import("../repositories/tasksRepository.js");
 
 describe("listTasks", () => {
   test("listTasks returns all tasks", async () => {
@@ -242,10 +235,75 @@ describe("updateTask", () => {
       priority: "PT",
       deadline: null,
     });
-    expect(updateById).toHaveBeenCalledWith(
+    expect(updateById).toHaveBeenCalledWith("fake-id", expect.objectContaining({ title: "new" }));
+  });
+
+  test("manager succeeds on updating another user's task", async () => {
+    findById.mockResolvedValueOnce({
+      _id: "fake-id",
+      title: "T",
+      description: "D",
+      completed: false,
+      assignee: "old",
+      status: "not started",
+      assigner: "AR",
+      station: "S",
+      prerequisites: "PR",
+      priority: "PT",
+      deadline: null,
+      ownerId: { toString: () => "alice-id" },
+    });
+
+    updateById.mockResolvedValueOnce({
+      _id: "fake-id",
+      title: "T",
+      description: "D",
+      completed: false,
+      assignee: "new",
+      status: "not started",
+      assigner: "AR",
+      station: "S",
+      prerequisites: "PR",
+      priority: "PT",
+      deadline: null,
+      ownerId: { toString: () => "alice-id" },
+    });
+
+    usersRepository.findById.mockResolvedValueOnce({ role: "manager" });
+
+    const result = await updateTask(
       "fake-id",
-      expect.objectContaining({ title: "new" }),
+      {
+        title: "T",
+        description: "D",
+        completed: false,
+        assignee: "new",
+        status: "not started",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+        priority: "PT",
+        deadline: null,
+      },
+      { id: "bob-id" },
     );
+
+    expect(usersRepository.findById).toHaveBeenCalledWith("bob-id");
+    expect(result.ok).toBe(true);
+    expect(result.value).toEqual({
+      id: "fake-id",
+      title: "T",
+      description: "D",
+      completed: false,
+      status: "not started",
+      assignee: "new",
+      assigner: "AR",
+      station: "S",
+      prerequisites: "PR",
+      priority: "PT",
+      deadline: null,
+    });
+    expect(updateById).toHaveBeenCalledWith("fake-id", expect.objectContaining({ assignee: "new" }));
   });
 });
 
