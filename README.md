@@ -138,52 +138,6 @@ Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoin
 
 Existing tasks have their priority toggled at `PATCH /tasks/:id/priority`. A request to this endpoint is made after a user clicks the 'Priority' button on a specific task. It sends a request to the endpoint matching the ID of the toggled entry, and the task is immediately toggled on their task list.
 
-### Authentication
-
-Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
-
-- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
-- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
-- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
-
-Each user has these fields:
-
-- Username - `text`, required, unique (case-insensitive)
-- Email - `text`, optional, unique
-- Password hash - `text`
-- Role - one of `farmer`, `manager`, `admin`
-
-#### Roles and making an admin
-
-Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
-
-The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
-
-1. The person signs up normally through `/signup`.
-1. Run the script with their username and the new role:
-
-   ```bash
-   npm run set-role -- <username> admin
-   ```
-
-   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
-
-The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
-
-### Health Route
-
-`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
-
-```json
-{ "status": "ok", "db": "connected", "uptime": 42 }
-```
-
-- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
-- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
-- `uptime` - seconds since the server started
-
-It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
-
 # Design Decisions
 
 ### MongoDB vs JSON File
@@ -264,19 +218,51 @@ The app received a visual overhaul using tailwind. This primarily altered the ap
 
 # Sprint 4 Changes
 
-### Health
+### Health Route
 
-The health of the server can be checked at the public endpoint `GET /health`. If the server is functional, this endpoint will return JSON containing `{ "status": "ok"}`.
+`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
 
-No authentication is required to access this endpoint.
+```json
+{ "status": "ok", "db": "connected", "uptime": 42 }
+```
 
-### Signup/Login
+- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
+- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
+- `uptime` - seconds since the server started
 
-TODO
+It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
 
-### Authorization Rule
+### Authentication
 
-TODO
+Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
+
+- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
+- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
+- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
+
+Each user has these fields:
+
+- Username - `text`, required, unique (case-insensitive)
+- Email - `text`, optional, unique
+- Password hash - `text`
+- Role - one of `farmer`, `manager`, `admin`
+
+### Roles and making an admin
+
+Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
+
+The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
+
+1. The person signs up normally through `/signup`.
+1. Run the script with their username and the new role:
+
+   ```bash
+   npm run set-role -- <username> admin
+   ```
+
+   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
+
+The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
 
 ### Accessibility Changes
 
