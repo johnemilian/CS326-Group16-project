@@ -1,3 +1,5 @@
+// __tests__/tasksService.test.js
+
 import { describe, expect, jest } from "@jest/globals";
 
 jest.unstable_mockModule("../repositories/tasksRepository.js", () => ({
@@ -13,9 +15,14 @@ jest.unstable_mockModule("../repositories/tasksRepository.js", () => ({
   removeById: jest.fn(),
 }));
 
+jest.unstable_mockModule("../repositories/usersRepository.js", () => ({
+  findById: jest.fn(),
+}));
+
 const { listTasks, createTask, updateTask, deleteTask, togglePriority, toggleCompleted } =
   await import("../services/tasksService.js");
 const { getAll, findById, updateById, removeById, create } = await import("../repositories/tasksRepository.js");
+const usersRepository = await import("../repositories/usersRepository.js");
 
 describe("listTasks", () => {
   test("listTasks returns all tasks", async () => {
@@ -25,26 +32,35 @@ describe("listTasks", () => {
         title: "T",
         description: "D",
         assignee: "AS",
+        completed: false,
+        status: "not started",
         assigner: "AR",
         station: "S",
         prerequisites: "PR",
         priority: "PT",
         deadline: new Date("2026-11-22"),
+        ownerId: { toString: () => "alice-id" },
       },
     ]);
+    usersRepository.findById.mockResolvedValueOnce({ role: "farmer" });
 
-    const result = await listTasks();
+    const result = await listTasks({ id: "cranjis-id" });
 
+    expect(usersRepository.findById).toHaveBeenCalledWith("cranjis-id");
     expect(result[0]).toEqual({
       id: "fake-id",
       title: "T",
       description: "D",
       assignee: "AS",
       assigner: "AR",
+      completed: false,
+      status: "not started",
       station: "S",
       prerequisites: "PR",
       priority: "PT",
       deadline: "2026-11-22",
+      isOwner: false,
+      isMgr: false,
     });
     expect(getAll).toHaveBeenCalled();
   });
