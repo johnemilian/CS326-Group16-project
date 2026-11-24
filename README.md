@@ -1,95 +1,78 @@
+<!-- README.md -->
+
 # Project Info
 
 This project is a website that would run on tablets inside the [Cape Abilities Farm](https://www.capeabilitiesfarm.org/who-we-are)'s greenhouses. It allows for employees and managers to see which seeds need to be planted and log when they have been planted.
 
 ### Setup
 
-We are currently running server inside a custom environment container. To set up:
+1. Clone the repository:
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/). Docker is the engine that runs the dev environment. The Desktop app gives you a graphical dashboard too.
+   ```bash
+   git clone https://github.com/johnemilian/CS326-Group16-project [path]
+   ```
 
-   _Windows users: during installation, choose "Use WSL 2" if asked. After installing, open Docker Desktop once and let it finish starting up before moving on._
+1. Navigate into the top level of the project directory:
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/). The code editor.
-1. Install [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers). This VS Code extension makes the "open in container" magic work. Click the link, then click **Install**, and VS Code will open and install it automatically.
+   ```bash
+   cd [path]
+   ```
 
-   Now make sure Docker Desktop is running (look for the Docker whale icon in your taskbar or menu bar) before continuing.
+1. Install Node.js dependencies:
 
-1. Download the custom environment: Go to the [Gantry Dev Container Releases](https://github.com/timdrichards/gantry/releases) Under "Assets," download the latest release by selecting the file named `gantry-<version>.zip`. Do not download the "Source code" archives, that is not the release build. Save the file somewhere you can find it, such as your Desktop.
-1. Extract the environment folder, `gantry-<version>.zip`, to your chosen folder location (do not leave it in your Downloads folder).
+   ```bash
+   npm install
+   ```
 
-   On macOS: double-click `gantry-<version>.zip` to extract it. A folder named `gantry-<version>` will appear alongside the archive.
+1. Generate the stylesheet:
 
-   On Windows: right-click `gantry-<version>.zip` and choose "Extract All." Select your destination folder and click Extract. A folder named `gantry-<version>` will appear in the destination folder.
+   ```bash
+   npm run build:css
+   ```
 
-   On Linux: open a terminal and run unzip `gantry-<version>.zip`. A folder named `gantry-<version>` will appear in the destination folder. You may also use a zip extracting application provided by the particular Linux distribution you are using (e.g., Ubuntu, Fedora, Arch)
+1. Start the database:
 
-1. Open the Development Environment in VS Code:
-   1. Open VS Code. Go to **File → Open Folder** and select the development environment folder.
+   Start or otherwise make available a MongoDB instance, and set `MONGODB_URI` in `.env` to its connection string.
+   - **UMass COMPSCI 326 gantry development environment**: this is done by starting MongoDB with
 
-      VS Code will show a notification in the bottom-right corner (this may take a moment).
+     ```bash
+     dc-up mongo
+     ```
 
-   1. Click **"Reopen in Container"**. If you missed the notification, open the Command Palette (`Ctrl+Shift+P` on Windows/Linux, `Cmd+Shift+P` on Mac), type **"Reopen in Container"**, and press Enter.
-   1. Wait for the build to finish. The first time takes 3–5 minutes while it downloads everything. You will see a progress bar in the bottom-right corner. Subsequent openings are almost instant. It is helpful to be on a fast WiFi connection for this part.
+1. Set up environment variables:
 
-   When the build finishes, VS Code reloads and you are now inside the development environment.
+   Create your `.env` file from the template:
 
-1. The terminal is how you run code and commands. Inside VS Code:
+   ```bash
+   cp .env.example .env
+   ```
 
-   Go to **Terminal → New Terminal**S in the menu bar, or press ``Ctrl + ` `` (backtick).
-   The Gantry banner confirms everything is working. The `$` at the end of the last line is the prompt, it is waiting for you to type a command.
+   Then open `.env` and set both variables. The server refuses to start if either one is missing.
 
-   New to the terminal? The terminal works by typing a command and pressing Enter. Commands are case-sensitive. If something goes wrong, you can usually press `Ctrl+C` to stop whatever is running.
+   | Variable         | What it is                                                                                                                                                          |
+   | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `MONGODB_URI`    | The MongoDB connection string. Change `group16` to name your own database.                                                                                          |
+   | `SESSION_SECRET` | The secret that signs the login session cookie. Use a long random string, generated with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 
-From inside the [Gantry](https://github.com/timdrichards/gantry) development environment, clone the repository:
+   `.env` is git-ignored. Never commit it.
 
-```bash
-git clone https://github.com/johnemilian/CS326-Group16-project
-```
+1. Start the server:
 
-Navigate into the top level of the project directory.
+   ```bash
+   npm start
+   ```
 
-Install Node.js production dependencies:
+   The server will open locally on <http://localhost:3000/>.
 
-```bash
-npm install --omit=dev
-```
-
-Start the database:
-
-```bash
-dc-up mongo
-```
-
-Create a new database replacing `your-db-name`:
-
-```bash
-echo "MONGODB_URI=mongodb://dev:devpassword@mongo:27017/your-db-name?authSource=admin" >> .env
-```
-
-Running locally:
-
-```bash
-npm start
-```
-
-The server will open locally on <http://localhost:3000/>.
-
-To stop the server run `ctrl + C` (^C) in the terminal.
+   To stop the server run `ctrl + C` (^C) in the terminal.
 
 ### Development
-
-Install dev dependencies:
-
-```bash
-npm install
-```
 
 #### Tailwind CSS
 
 [Tailwind](https://tailwindcss.com/) and [TailwindCSS CLI](https://tailwindcss.com/docs/installation/tailwind-cli) are used in this project.
 
-To update the style sheet (`/public/style.css`) after any changes are made, run:
+To update the style sheet (`/public/output.css`) after any changes are made, run:
 
 ```bash
  npm run build:css
@@ -154,6 +137,52 @@ Existing tasks are **updated** at `PUT /tasks/:id`. A request to this endpoint i
 Existing tasks are **deleted** at `DELETE /tasks/:id`. A request to this endpoint is made after a user clicks the 'Delete' button on a specific task. It sends a request to the endpoint matching the ID of the deleted entry., and the deleted task is immediately removed on their task list.
 
 Existing tasks have their priority toggled at `PATCH /tasks/:id/priority`. A request to this endpoint is made after a user clicks the 'Priority' button on a specific task. It sends a request to the endpoint matching the ID of the toggled entry, and the task is immediately toggled on their task list.
+
+### Authentication
+
+Users sign up at `GET /signup` and log in at `GET /login`. Both pages are plain forms that post to the same path and redirect to `/tasks` on success. Logging out is a `POST /logout` from the button in the header.
+
+- **Passwords** are hashed with [bcrypt](https://www.npmjs.com/package/bcrypt) (12 salt rounds) before they are saved. Only the hash (`passwordHash`) is stored, never the password itself.
+- **Sessions** use [express-session](https://www.npmjs.com/package/express-session) with [connect-mongo](https://www.npmjs.com/package/connect-mongo), so sessions are stored in the `sessions` collection in MongoDB and survive a server restart. The browser only holds a signed `sid` cookie (`HttpOnly`, `SameSite=Lax`, and `Secure` when `NODE_ENV=production`). The session id is regenerated on every login.
+- **Remember me** on the login form keeps the cookie for 30 days. Without it, the cookie is deleted when the browser closes.
+
+Each user has these fields:
+
+- Username - `text`, required, unique (case-insensitive)
+- Email - `text`, optional, unique
+- Password hash - `text`
+- Role - one of `farmer`, `manager`, `admin`
+
+#### Roles and making an admin
+
+Every account created through the signup form is a `farmer`. The signup form has no role field, and the server ignores a `role` value even if someone adds one to the request.
+
+The only way to give someone the `manager` or `admin` role is the `set-role` script, run from the terminal by someone with access to the database:
+
+1. The person signs up normally through `/signup`.
+1. Run the script with their username and the new role:
+
+   ```bash
+   npm run set-role -- <username> admin
+   ```
+
+   For example, `npm run set-role -- ryan admin` prints `ryan is now admin.` Use `manager` or `farmer` in place of `admin` to set those roles.
+
+The script uses `MONGODB_URI` from `.env`. The new role takes effect on the user's next request, without logging out, because the role is read from the database on every request rather than stored in the cookie.
+
+### Health Route
+
+`GET /health` answers with a small JSON status object, so you can check the app is alive without logging in:
+
+```json
+{ "status": "ok", "db": "connected", "uptime": 42 }
+```
+
+- `status` - `"ok"` when the app and database are both up, `"error"` otherwise
+- `db` - the MongoDB connection state: `connected`, `connecting`, `disconnecting` or `disconnected`
+- `uptime` - seconds since the server started
+
+It returns `200` when the database is connected and `503` when it is not. The route runs before the session middleware, so checking it never creates a session.
 
 # Design Decisions
 
