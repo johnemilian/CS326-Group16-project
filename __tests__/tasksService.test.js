@@ -68,6 +68,7 @@ describe("listTasks", () => {
   test("listTasks returns an empty array when there are no tasks", async () => {
     getAll.mockResolvedValueOnce([]);
 
+    // no logged-in user
     const result = await listTasks();
 
     expect(result).toEqual([]);
@@ -77,96 +78,108 @@ describe("listTasks", () => {
 
 describe("createTask", () => {
   test("createTask rejects a missing title", async () => {
-    const result = await createTask({});
+    const result = await createTask({}, { id: "cranjis-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects an empty title", async () => {
-    const result = await createTask({ title: "   " });
+    const result = await createTask({ title: "   " }, { id: "travis-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects a title that is not a string", async () => {
-    const result = await createTask({ title: 123 });
+    const result = await createTask({ title: 123 }, { id: "bob-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask accepts a title of 60 characters", async () => {
-    const result = await createTask({ title: "a".repeat(60) });
+    const result = await createTask({ title: "a".repeat(60) }, { id: "dominic-id" });
 
     expect(result.ok).toBe(true);
     expect(create).toHaveBeenCalled();
   });
 
   test("createTask rejects a title longer than 60 characters", async () => {
-    const result = await createTask({ title: "a".repeat(61) });
+    const result = await createTask({ title: "a".repeat(61) }, { id: "beatrice-id" });
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask accepts null optional text fields", async () => {
-    const result = await createTask({
-      title: "T",
-      description: "D",
-      assignee: "AS",
-      assigner: "AR",
-      station: "S",
-      prerequisites: "PR",
-      priority: "PT",
-      description: null,
-    });
+    const result = await createTask(
+      {
+        title: "T",
+        description: "D",
+        assignee: "AS",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+        priority: "PT",
+        description: null,
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(true);
     expect(create).toHaveBeenCalled();
   });
 
   test("createTask rejects optional text fields that are not strings", async () => {
-    const result = await createTask({
-      title: "T",
-      description: 123,
-      assignee: "AS",
-      assigner: "AR",
-      station: "S",
-      prerequisites: "PR",
-      priority: "PT",
-    });
+    const result = await createTask(
+      {
+        title: "T",
+        description: 123,
+        assignee: "AS",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+        priority: "PT",
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask rejects an invalid deadline", async () => {
-    const result = await createTask({
-      title: "T",
-      description: "D",
-      assignee: "AS",
-      assigner: "AR",
-      station: "S",
-      prerequisites: "PR",
-      priority: "PT",
-      deadline: "not-a-date",
-    });
+    const result = await createTask(
+      {
+        title: "T",
+        description: "D",
+        assignee: "AS",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+        priority: "PT",
+        deadline: "not-a-date",
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(false);
     expect(result.error.status).toBe(400);
   });
 
   test("createTask saves a valid task and returns its DTO", async () => {
-    const result = await createTask({
-      title: "T",
-      description: "D",
-      assignee: "AS",
-      assigner: "AR",
-      station: "S",
-      prerequisites: "PR",
-    });
+    const result = await createTask(
+      {
+        title: "T",
+        description: "D",
+        assignee: "AS",
+        assigner: "AR",
+        station: "S",
+        prerequisites: "PR",
+      },
+      { id: "cranjis-id" },
+    );
 
     expect(result.ok).toBe(true);
     expect(result.value).toEqual({
