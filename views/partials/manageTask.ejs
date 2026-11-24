@@ -4,8 +4,12 @@
 <% const details = [["Station", task.station], ["Assigner", task.assigner], ["Status", task.status], ["Assignee", task.assignee], ["Deadline", task.deadline], ["Prerequisites", task.prerequisites]].filter(([, value]) => value); %>
 <li class="group/task-card flex justify-between items-center gap-2 p-3 border-2 border-gray-400 rounded-sm" data-id="<%= task.id %>" data-title="<%= task.title %>" data-status="<%= task.status %>" data-completed="<%= task.completed %>" data-description="<%= task.description %>" data-station="<%= task.station %>" data-assigner="<%= task.assigner %>" data-assignee="<%= task.assignee %>" data-deadline="<%= task.deadline %>" data-prerequisites="<%= task.prerequisites %>" data-priority="<%= task.priority %>">
   <span class="task-display flex-1"><strong><%= task.title %>:</strong> <%= task.description %><% if (details.length) { %><small class="block mt-1 text-gray-600"><%= details.map(([label, value]) => `${label}: ${value}`).join(" · ") %></small><% } %></span>
+  <% if (task.isMgr) { %>
   <button class="priority-btn btn border-2 border-amber-800 text-amber-800 group-data-[priority=true]/task-card:text-amber-50 group-data-[priority=true]/task-card:bg-amber-700 group-data-[priority=true]/task-card:uppercase" aria-pressed="<%= task.priority %>" type="button">Priority</button>
+  <% } %>
   <button class="completed-btn btn border-2 border-green-800 text-green-800 group-data-[completed=true]/task-card:text-green-50 group-data-[completed=true]/task-card:bg-green-700 group-data-[completed=true]/task-card:uppercase" aria-pressed="<%= task.completed %>" type="button">Completed</button>
+  <% if (task.isOwner || task.isMgr) { %>
   <button class="edit-btn btn border-2 border-cyan-800 text-cyan-800" type="button">Edit</button>
   <button class="delete-btn btn border-2 border-rose-800 text-rose-800 disabled:opacity-50 disabled:cursor-not-allowed" type="button">Delete</button>
+  <% } %>
 </li>

@@ -14,6 +14,7 @@ const taskSchema = new mongoose.Schema(
     priority: { type: Boolean, default: false },
     deadline: { type: Date, required: false },
     prerequisites: { type: String, required: false },
+    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true },
 );

@@ -1,3 +1,5 @@
+// services/authService.js
+
 import bcrypt from "bcrypt";
 import { Ok, Err } from "../result.js";
 import * as usersRepository from "../repositories/usersRepository.js";
